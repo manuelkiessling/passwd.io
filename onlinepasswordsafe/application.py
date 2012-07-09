@@ -2,11 +2,12 @@ from .domain import Dossier, DossierRepository
 
 class WalletService(object):
     def fileDossier(self, owner_hash, access_hash, content):
-        dossier = Dossier()
-        dossier.owner_hash = owner_hash
-        dossier.access_hash = access_hash
-        dossier.content = content
         repo = DossierRepository()
+        dossier = self.retrieveDossier(owner_hash, access_hash)
+        if dossier:
+            dossier.content = content
+        else:
+            dossier = Dossier(owner_hash=owner_hash, access_hash=access_hash, content=content)
         repo.store(dossier)
         return True
 

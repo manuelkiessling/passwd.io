@@ -16,21 +16,27 @@ def save(request):
         request.response.status_int = 500
     return {'success': success}
 
-@view_config(route_name='load')
+@view_config(route_name='load', renderer="string")
+@view_config(route_name='load.json', renderer="json", xhr=False)
 def load(request):
     walletService = WalletService()
     try:
         allowed = walletService.canAccessDossier(request.params['owner_hash'], request.params['access_hash'])
         if not allowed:
-            return Response('Access denied.', status_int=401)
+            request.response.status_int = 401
+            return {'status': 'Not allowed'}
     except Exception as e:
-            return Response(str(e), status_int=400)
+            request.response.status_int = 400
+            return {'status': 'Bad request'}
     dossier = walletService.retrieveDossier(request.params['owner_hash'], request.params['access_hash'])
     if dossier:
-        return Response(dossier.content)
+        request.response.status_int = 200
+        return { 'owner_hash': dossier.owner_hash,
+                 'access_hash': dossier.access_hash,
+                 'content': dossier.content }
     else:
-        return Response('error', status_int=500)
-
+        request.response.status_int = 500
+        return {'status': 'error'}
 
 
 

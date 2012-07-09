@@ -1,1 +1,26 @@
-index.html
+<!doctype html>
+<html>
+    <head>
+        <title>Online Password Safe</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="http://cloud.github.com/downloads/emberjs/ember.js/ember-0.9.6.min.js"></script>
+        <script src="index.js"></script>
+    </head>
+    <body>
+        <script type="text/x-handlebars">
+            <div id="editor">
+                <b>Username: </b>
+                {{view App.UsernameField placeholder="" valueBinding="App.editorController.username"}}
+                <br />
+                <b>Password: </b>
+                {{view App.PasswordField placeholder="" valueBinding="App.editorController.password"}}
+                <br />
+                <button {{action "loadDossier" target="App.editorController"}}>Load</button>
+            </div>
+            <div id="content">
+                {{view App.ContentField placeholder="" valueBinding="App.editorController.content"}}
+            </div>
+        </script>
+    </body>
+</html>

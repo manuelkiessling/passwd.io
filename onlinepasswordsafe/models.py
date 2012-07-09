@@ -29,7 +29,7 @@ class MyModel(Base):
 
 class File(Base):
     __tablename__ = 'files'
-    id = Column(Integer, primary_key=True)
+    id = Column(String(36), default="", nullable=False, primary_key=True)
     owner_hash = Column(String(40), unique=True)
     access_hash = Column(String(40))
     content = Column(Text)

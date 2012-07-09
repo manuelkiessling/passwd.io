@@ -5,6 +5,7 @@ from pyramid import testing
 from webtest import TestApp
 
 from .domain import DossierRepository, Dossier
+from .application import WalletService
 
 class DomainUnitTests(unittest.TestCase):
     def setUp(self):
@@ -23,21 +24,64 @@ class DomainUnitTests(unittest.TestCase):
         pass
 
     def test_dossierRepository_exists(self):
+        dossier = Dossier(owner_hash='1111111111111111', access_hash='2222222222222222', content='Hello World')
         repo = DossierRepository()
-        dossier = Dossier()
-        dossier.id = '1'
-        dossier.owner_hash = '1111111111111111'
-        dossier.access_hash = '2222222222222222'
-        dossier.content = 'Hello World'
         repo.store(dossier)
         exists = repo.exists('1111111111111111', '2222222222222222')
         self.assertTrue(exists)
 
+    def test_subsequent_storing_overwrites_existing_dossier(self):
+        dossier = Dossier(owner_hash='1111111111111111', access_hash='2222222222222222', content='Hello World')
+        id = dossier.id
+        repo = DossierRepository()
+        repo.store(dossier)
+        dossier = repo.find(owner_hash='1111111111111111', access_hash='2222222222222222')
+        self.assertTrue(dossier.id == id)
+        self.assertTrue(dossier.content == 'Hello World')
+        dossier = Dossier(id=id, owner_hash='1111111111111111', access_hash='2222222222222222', content='foo')
+        repo = DossierRepository()
+        repo.store(dossier)
+        dossier = repo.find(owner_hash='1111111111111111', access_hash='2222222222222222')
+        self.assertTrue(dossier.id == id)
+        self.assertTrue(dossier.content == 'foo')
+
+    def test_cant_store_dossier_with_existing_owner_hash_under_different_id(self):
+        dossier = Dossier(owner_hash='1111111111111111', access_hash='2222222222222222', content='Hello World')
+        id = dossier.id
+        repo = DossierRepository()
+        repo.store(dossier)
+        dossier = Dossier(owner_hash='1111111111111111', access_hash='3333333333333333', content='foo')
+        repo = DossierRepository()
+        try:
+            repo.store(dossier)
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+
     def test_dossierRepository_exists_not(self):
-        from .domain import DossierRepository
         repo = DossierRepository()
         exists = repo.exists('1111111111111111', '2222222222222222')
         self.assertFalse(exists)
+
+class ApplicationUnitTests(unittest.TestCase):
+    def setUp(self):
+        from sqlalchemy import create_engine
+        from .models import DBSession, Base
+        engine = create_engine('sqlite://')
+        Base.metadata.create_all(engine)
+        DBSession.configure(bind=engine)
+        return DBSession
+
+    def tearDown(self):
+        from onlinepasswordsafe.models import DBSession
+        DBSession.remove()
+
+    def test_filing_a_dossier_with_an_existing_owner_access_hash_by_overwriting(self):
+        ws = WalletService()
+        ws.fileDossier('1111111111111111', '2222222222222222', 'Hello World')
+        ws.fileDossier('1111111111111111', '2222222222222222', 'foo')
+        dossier = ws.retrieveDossier('1111111111111111', '2222222222222222')
+        self.assertTrue(dossier.content == 'foo')
 
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -65,24 +109,24 @@ class FunctionalTests(unittest.TestCase):
 
     def test_load(self):
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save', post_params, status=200)
-        res = self.testapp.get('/load?owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
+        self.testapp.post('/save.json', post_params, status=200)
+        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
         self.assertTrue(b'fdjs9884jhf98' in res.body)
 
     def test_load_wrongaccesshash(self):
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save', post_params, status=200)
-        res = self.testapp.get('/load?owner_hash=1111111111111111&access_hash=3333333333333333', status=401) 
+        self.testapp.post('/save.json', post_params, status=200)
+        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=3333333333333333', status=401) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
-        self.assertTrue(b'Access denied.' in res.body)
+        self.assertTrue(b'Not allowed' in res.body)
 
     def test_load_failsIfOwnerHashIsTooShort(self):
-        res = self.testapp.get('/load?owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
-        self.assertTrue(b'owner_hash is too short' in res.body)
+        res = self.testapp.get('/load.json?owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
+        self.assertTrue(b'Bad request' in res.body)
 
     def test_load_failsIfAccessHashIsTooShort(self):
-        res = self.testapp.get('/load?owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
-        self.assertTrue(b'access_hash is too short' in res.body)
+        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
+        self.assertTrue(b'Bad request' in res.body)
 
     def test_create(self):
         return

@@ -1,12 +1,26 @@
 from .models import DBSession, File
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import exists
+import uuid
 
 class Dossier(object):
-    id = None
-    owner_hash = None
-    access_hash = None 
-    content = None
+    def __init__(self, owner_hash, access_hash, id=None, content=None):
+        dv = DossierValidation()
+        dv.validateOwnerHash(owner_hash)
+        dv.validateAccessHash(access_hash)
+
+        self.owner_hash = owner_hash
+        self.access_hash = access_hash
+
+        if id == None:
+            self.id = str(uuid.uuid4())
+        else:
+            self.id = id
+
+        if content == None:
+            self.content = ""
+        else:
+            self.content = content
 
 class DossierRepository(object):
     def store(self, dossier):
@@ -15,7 +29,8 @@ class DossierRepository(object):
         file.owner_hash = dossier.owner_hash
         file.access_hash = dossier.access_hash
         file.content = dossier.content
-        DBSession.add(file)
+        DBSession.merge(file)
+        DBSession.flush()
 
     def find(self, owner_hash, access_hash):
         dv = DossierValidation()
@@ -24,11 +39,7 @@ class DossierRepository(object):
         try:
             dossierData = DBSession.query(File).filter(File.owner_hash==owner_hash, File.access_hash==access_hash).first()
             if dossierData:
-                dossier = Dossier()
-                dossier.id = dossierData.id
-                dossier.owner_hash = dossierData.owner_hash
-                dossier.access_hash = dossierData.access_hash
-                dossier.content = dossierData.content
+                dossier = Dossier(id=dossierData.id, owner_hash=dossierData.owner_hash, access_hash=dossierData.access_hash, content=dossierData.content)
                 return dossier
             else:
                 return False
