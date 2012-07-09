@@ -1,0 +1,10 @@
+pyramid
+SQLAlchemy
+sqlalchemy-migrate
+transaction
+pyramid_tm
+pyramid_debugtoolbar
+zope.sqlalchemy
+waitress
+WebTest
+BeautifulSoup
