@@ -16,6 +16,7 @@ migrations/__init__.py
 migrations/manage.py
 migrations/versions/001_Add_file_table.py
 migrations/versions/002_Fixing_wrong_column_name_in_files_table.py
+migrations/versions/003_Files_table_id_to_36byte_uuid_string.py
 migrations/versions/__init__.py
 onlinepasswordsafe/__init__.py
 onlinepasswordsafe/application.py
@@ -37,4 +38,5 @@ onlinepasswordsafe/static/transparent.gif
 onlinepasswordsafe/static/webapp/index.css
 onlinepasswordsafe/static/webapp/index.html
 onlinepasswordsafe/static/webapp/index.js
+onlinepasswordsafe/templates/editor.pt
 onlinepasswordsafe/templates/mytemplate.pt
