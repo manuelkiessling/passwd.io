@@ -1,13 +1,6 @@
 App = Em.Application.create();
 
 
-App.Dossier = Em.Object.extend({
-    owner_hash: null,
-    access_hash: null,
-    content: null
-});
-
-
 App.UsernameField = Em.TextField.extend();
 
 App.ContentField = Em.TextField.extend();
@@ -25,20 +18,36 @@ App.editorController = Em.Object.create({
     content: '',
     loadDossier: function() {
         var me = this;
-        var username = me.get("username");
-        var password = me.get("password");
-        if ( username && password ) {
+        if ( me.get("username") && me.get("password") ) {
+            var owner_hash = CryptoJS.PBKDF2(me.get("username"), "", { keySize: 512/32, iterations: 1000 }).toString();
+            var access_hash = CryptoJS.PBKDF2(me.get("password"), "", { keySize: 512/32, iterations: 1000 }).toString();
             var url = 'http://localhost:6543/load.json'
-                url += '?owner_hash=%@&access_hash=%@'.fmt(me.get("username"), me.get("password"));
+                url += '?owner_hash=%@&access_hash=%@'.fmt(owner_hash, access_hash);
             $.getJSON(url,function(data) {
                 $(data).each(function(index, value) {
-                    var d = App.Dossier.create({
-                        owner_hash: value.owner_hash,
-                        access_hash: value.access_hash,
-                        content: value.content
-                    });
-                    me.set("content", d.content);
+                    me.set("content", value.content);
                 })
+            });
+        }
+    },
+    saveDossier: function() {
+        var me = this;
+        if ( me.get("username") && me.get("password") ) {
+            var owner_hash = CryptoJS.PBKDF2(me.get("username"), "", { keySize: 512/32, iterations: 1000 }).toString();
+            var access_hash = CryptoJS.PBKDF2(me.get("password"), "", { keySize: 512/32, iterations: 1000 }).toString();
+            var content = me.get("content");
+
+            var post = $.post(
+                "http://localhost:6543/save.json",
+                { "owner_hash": owner_hash,
+                  "access_hash": access_hash,
+                  "content": me.get("content") }
+            );
+            
+            post.success();
+            
+            post.error(function(error) {
+                alert('Could not save the data.');
             });
         }
     }
