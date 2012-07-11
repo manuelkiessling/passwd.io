@@ -1,28 +1,55 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Online Password Safe</title>
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-responsive.min.css">
+        <link rel="stylesheet" href="index.css">
+
         <script type="text/javascript" src="vendor/jquery.min.js"></script>
         <script type="text/javascript" src="vendor/ember-0.9.6.min.js"></script>
         <script type="text/javascript" src="vendor/sjcl.js"></script>
         <script type="text/javascript" src="index.js"></script>
     </head>
     <body>
-        <script type="text/x-handlebars">
-            <div id="editor">
-                <b>Username: </b>
-                {{view App.UsernameField placeholder="" valueBinding="App.editorController.username"}}
-                <br />
-                <b>Password: </b>
-                {{view App.PasswordField placeholder="" valueBinding="App.editorController.password"}}
-                <br />
-                <button {{action "loadDossier" target="App.editorController"}}>Load</button>
-                <button {{action "saveDossier" target="App.editorController"}}>Save</button>
+        <div class="container">
+            <div class="row">
+                <div class="span3"></div>
+                <div id="content" class="span6 well">
+                    <script type="text/x-handlebars">
+                        <fieldset>
+                            <div class="control-group">
+                                <div class="controls">
+                                    {{view App.UsernameField class="input-xlarge" id="username" placeholder="Username" valueBinding="App.editorController.username"}}
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    {{view App.PasswordField class="input-xlarge" id="password" placeholder="Passphrase" valueBinding="App.editorController.password"}}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn" {{action "loadDossier" target="App.editorController"}}>Load dossier</button>
+                                    <button id="savebutton" type="submit" class="btn" {{action "saveDossier" target="App.editorController"}}>Save dossier</button>
+                                    <span id="statuslabel" {{bindAttr class="App.editorController.statusLabelType :label"}}>{{App.editorController.statusMessage}}</span>
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="controls">
+                                    {{view App.ContentField placeholder="" valueBinding="App.editorController.content" class="input-xlarge" rows="20"}}
+                                </div>
+                            </div>
+                        </fieldset>
+                    </script>
+                </div>
+                <div class="span3"></div>
             </div>
-            <div id="content">
-                {{view App.ContentField placeholder="" valueBinding="App.editorController.content"}}
-            </div>
-        </script>
+        </div>
     </body>
 </html>
