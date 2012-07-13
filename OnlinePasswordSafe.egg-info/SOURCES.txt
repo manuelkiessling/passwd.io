@@ -17,6 +17,8 @@ migrations/manage.py
 migrations/versions/001_Add_file_table.py
 migrations/versions/002_Fixing_wrong_column_name_in_files_table.py
 migrations/versions/003_Files_table_id_to_36byte_uuid_string.py
+migrations/versions/004_files_making_owner_hash_unique_again.py
+migrations/versions/005_files_owner_hash_unique_second_try.py
 migrations/versions/__init__.py
 onlinepasswordsafe/__init__.py
 onlinepasswordsafe/application.py
@@ -38,5 +40,16 @@ onlinepasswordsafe/static/transparent.gif
 onlinepasswordsafe/static/webapp/index.css
 onlinepasswordsafe/static/webapp/index.html
 onlinepasswordsafe/static/webapp/index.js
+onlinepasswordsafe/static/webapp/vendor/ember-0.9.6.min.js
+onlinepasswordsafe/static/webapp/vendor/jquery.min.js
+onlinepasswordsafe/static/webapp/vendor/sjcl.js
+onlinepasswordsafe/static/webapp/vendor/bootstrap/css/bootstrap-responsive.css
+onlinepasswordsafe/static/webapp/vendor/bootstrap/css/bootstrap-responsive.min.css
+onlinepasswordsafe/static/webapp/vendor/bootstrap/css/bootstrap.css
+onlinepasswordsafe/static/webapp/vendor/bootstrap/css/bootstrap.min.css
+onlinepasswordsafe/static/webapp/vendor/bootstrap/img/glyphicons-halflings-white.png
+onlinepasswordsafe/static/webapp/vendor/bootstrap/img/glyphicons-halflings.png
+onlinepasswordsafe/static/webapp/vendor/bootstrap/js/bootstrap.js
+onlinepasswordsafe/static/webapp/vendor/bootstrap/js/bootstrap.min.js
 onlinepasswordsafe/templates/editor.pt
 onlinepasswordsafe/templates/mytemplate.pt

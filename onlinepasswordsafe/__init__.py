@@ -15,6 +15,7 @@ def main(global_config, **settings):
     config.add_route('save.json', '/save.json')
     config.add_route('load', '/load')
     config.add_route('load.json', '/load.json')
+    config.add_route('changeAccessHash.json', '/changeAccessHash.json')
     config.scan()
     return config.make_wsgi_app()
 

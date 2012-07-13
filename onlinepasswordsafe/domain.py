@@ -24,13 +24,18 @@ class Dossier(object):
 
 class DossierRepository(object):
     def store(self, dossier):
+        existing_dossier = self._findByOwnerHash(dossier.owner_hash)
+        if existing_dossier:
+#            if existing_dossier.access_hash != dossier.access_hash:
+#                raise Exception("can't store dossier if access_hash differs")
+            if existing_dossier.id != dossier.id:
+                raise Exception("can't store dossier if id differs")
         file = File()
         file.id = dossier.id
         file.owner_hash = dossier.owner_hash
         file.access_hash = dossier.access_hash
         file.content = dossier.content
         DBSession.merge(file)
-        DBSession.flush()
 
     def find(self, owner_hash, access_hash):
         dv = DossierValidation()
@@ -38,6 +43,17 @@ class DossierRepository(object):
         dv.validateAccessHash(access_hash)
         try:
             dossierData = DBSession.query(File).filter(File.owner_hash==owner_hash, File.access_hash==access_hash).first()
+            if dossierData:
+                dossier = Dossier(id=dossierData.id, owner_hash=dossierData.owner_hash, access_hash=dossierData.access_hash, content=dossierData.content)
+                return dossier
+            else:
+                return False
+        except DBAPIError:
+            raise
+
+    def _findByOwnerHash(self, owner_hash):
+        try:
+            dossierData = DBSession.query(File).filter(File.owner_hash==owner_hash).first()
             if dossierData:
                 dossier = Dossier(id=dossierData.id, owner_hash=dossierData.owner_hash, access_hash=dossierData.access_hash, content=dossierData.content)
                 return dossier

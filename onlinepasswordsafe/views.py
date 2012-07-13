@@ -38,8 +38,17 @@ def load(request):
         request.response.status_int = 500
         return {'status': 'error'}
 
-
-
+@view_config(route_name='changeAccessHash.json', renderer="json", xhr=False)
+def changeAccessHash(request):
+    walletService = WalletService()
+    request.response.status_int = 200
+    success = True
+    try:
+        WalletService.changeAccessHash(request.params['owner_hash'], request.params['old_access_hash'], request.params['new_access_hash'])
+    except:
+        request.response.status_int = 401
+        success = False
+    return {'success': success}
 
 
 
