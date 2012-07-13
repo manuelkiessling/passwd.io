@@ -34,7 +34,7 @@ App.editorController = Em.Object.create({
             });
 
             getJSON.error(function() {
-                me.setLabelType('danger');
+                me.setLabelType('important');
                 me.set('statusMessage', 'Error loading dossier.');
             });
         } else {
@@ -62,7 +62,7 @@ App.editorController = Em.Object.create({
             });
             
             post.error(function(error) {
-                me.setLabelType('danger');
+                me.setLabelType('important');
                 me.set('statusMessage', 'Error saving dossier.');
             });
         }

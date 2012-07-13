@@ -14,3 +14,7 @@ body {
 #savebutton {
 	margin-right: 10px;
 }
+
+.input-xlarge {
+	width: 98%;
+}
