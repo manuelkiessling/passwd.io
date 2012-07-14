@@ -7,18 +7,24 @@ from webtest import TestApp
 from .domain import DossierRepository, Dossier
 from .application import WalletService
 
+def setUpUnitTests():
+    from sqlalchemy import create_engine
+    from .models import DBSession, Base
+    engine = create_engine('sqlite://')
+    Base.metadata.create_all(engine)
+    DBSession.configure(bind=engine)
+    return DBSession
+
+def tearDownUnitTests():
+    from onlinepasswordsafe.models import DBSession
+    DBSession.remove()
+
 class DomainUnitTests(unittest.TestCase):
     def setUp(self):
-        from sqlalchemy import create_engine
-        from .models import DBSession, Base
-        engine = create_engine('sqlite://')
-        Base.metadata.create_all(engine)
-        DBSession.configure(bind=engine)
-        return DBSession
+        setUpUnitTests()
 
     def tearDown(self):
-        from onlinepasswordsafe.models import DBSession
-        DBSession.remove()
+        tearDownUnitTests()
 
     def test_cantStoreInvalidDossier(self):
         pass
@@ -71,18 +77,12 @@ class DomainUnitTests(unittest.TestCase):
         exists = repo.exists('1111111111111111', '2222222222222222')
         self.assertFalse(exists)
 
-class ApplicationUnitTests(unittest.TestCase):
+class WalletServiceUnitTests(unittest.TestCase):
     def setUp(self):
-        from sqlalchemy import create_engine
-        from .models import DBSession, Base
-        engine = create_engine('sqlite://')
-        Base.metadata.create_all(engine)
-        DBSession.configure(bind=engine)
-        return DBSession
+        setUpUnitTests()
 
     def tearDown(self):
-        from onlinepasswordsafe.models import DBSession
-        DBSession.remove()
+        tearDownUnitTests()
 
     def test_filing_a_dossier_with_an_existing_owner_access_hash_by_overwriting(self):
         ws = WalletService()
@@ -134,6 +134,19 @@ class ApplicationUnitTests(unittest.TestCase):
         self.assertFalse(dossier)
         dossier = ws.retrieveDossier('1111111111111111', '2222222222222222')
         self.assertTrue(dossier.content == 'Hello World')
+
+class TokenServiceUnittests(unittest.TestCase):
+    def setUp(self):
+        setUpUnitTests()
+
+    def tearDown(self):
+        tearDownUnitTests()
+
+    def test_validates(self):
+        ts = TokenService()
+        checkCode = ts.getCheckCode()
+        token = ts.getToken(checkCode)
+        self.assertTrue(ts.isValid(token))
 
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -191,3 +204,11 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.post('/save.json', post_params, status=200)
         res = self.testapp.get('/changeAccessHash.json?owner_hash=1111111111111111&old_access_hash=4444444444444444&new_access_hash=3333333333333333', status=401) 
         self.assertFalse(res.json['success'])
+
+    def test_get_token(self):
+        ts = TokenService()
+        checkCode = ts.getCheckCode()
+        token = ts.getToken(checkCode)
+        res = self.testapp.get('/getToken.json?checkCode=' + checkCode)
+        self.assertTrue(token == res.json['token'])
+
