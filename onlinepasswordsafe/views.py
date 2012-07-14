@@ -16,7 +16,6 @@ def respondWithAccessError(request):
     request.response.status = "403 Forbidden: Missing or invalid token"
     return {}
 
-@view_config(route_name='save', renderer="string")
 @view_config(route_name='save.json', renderer="json", xhr=False)
 def save(request):
     if isInvalidToken(request):
@@ -29,7 +28,6 @@ def save(request):
         request.response.status_int = 500
     return {'success': success}
 
-@view_config(route_name='load', renderer="string")
 @view_config(route_name='load.json', renderer="json", xhr=False)
 def load(request):
     if isInvalidToken(request):
