@@ -5,7 +5,7 @@ from pyramid import testing
 from webtest import TestApp
 
 from .domain import DossierRepository, Dossier
-from .application import WalletService
+from .application import WalletService, TokenService
 
 def setUpUnitTests():
     from sqlalchemy import create_engine
@@ -142,11 +142,19 @@ class TokenServiceUnittests(unittest.TestCase):
     def tearDown(self):
         tearDownUnitTests()
 
+    def test_wrong_code_does_not_yield_token(self):
+        ts = TokenService()
+        self.assertFalse(ts.getToken('invalid'))
+
     def test_validates(self):
         ts = TokenService()
         checkCode = ts.getCheckCode()
         token = ts.getToken(checkCode)
         self.assertTrue(ts.isValid(token))
+
+    def test_does_not_validate(self):
+        ts = TokenService()
+        self.assertFalse(ts.isValid('invalid'))
 
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -168,47 +176,70 @@ class FunctionalTests(unittest.TestCase):
         DBSession.remove()
 
     def test_save(self):
+        t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        res = self.testapp.post('/save.json', post_params, status=200)
+        res = self.testapp.post('/save.json?token=' + t, post_params, status=200)
         self.assertTrue(res.json['success'])
 
     def test_load(self):
+        t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json', post_params, status=200)
-        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
+        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.get('/load.json?token=' + t +'&owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
         self.assertTrue(b'fdjs9884jhf98' in res.body)
 
     def test_load_wrongaccesshash(self):
+        t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json', post_params, status=200)
-        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=3333333333333333', status=401) 
+        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=401) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
 
     def test_load_failsIfOwnerHashIsTooShort(self):
-        res = self.testapp.get('/load.json?owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
+        t = getToken()
+        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
         self.assertTrue(b'Bad request' in res.body)
 
     def test_load_failsIfAccessHashIsTooShort(self):
-        res = self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
+        t = getToken()
+        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
         self.assertTrue(b'Bad request' in res.body)
 
     def test_change_access_hash(self):
+        t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json', post_params, status=200)
-        res = self.testapp.get('/changeAccessHash.json?owner_hash=1111111111111111&old_access_hash=2222222222222222&new_access_hash=3333333333333333', status=200) 
+        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&old_access_hash=2222222222222222&new_access_hash=3333333333333333', status=200) 
         self.assertTrue(res.json['success'])
 
     def test_change_access_hash_fails(self):
+        t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json', post_params, status=200)
-        res = self.testapp.get('/changeAccessHash.json?owner_hash=1111111111111111&old_access_hash=4444444444444444&new_access_hash=3333333333333333', status=401) 
+        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&old_access_hash=4444444444444444&new_access_hash=3333333333333333', status=401) 
         self.assertFalse(res.json['success'])
 
     def test_get_token(self):
         ts = TokenService()
         checkCode = ts.getCheckCode()
         token = ts.getToken(checkCode)
-        res = self.testapp.get('/getToken.json?checkCode=' + checkCode)
+        res = self.testapp.get('/getToken.json?checkCode=' + checkCode, status=200)
         self.assertTrue(token == res.json['token'])
+
+    def test_get_token_fails_with_wrong_code(self):
+        res = self.testapp.get('/getToken.json?checkCode=invalid', status=400)
+        self.assertFalse(res.json)
+
+    def test_api_calls_fail_with_wrong_token(self):
+        t = getToken()
+        post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
+        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/save.json?token=invalid', post_params, status=403)
+        self.testapp.post('/save.json', post_params, status=403)
+
+def getToken():
+    ts = TokenService()
+    checkCode = ts.getCheckCode()
+    return ts.getToken(checkCode)
 

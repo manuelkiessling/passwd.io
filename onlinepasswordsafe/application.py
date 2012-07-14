@@ -1,5 +1,22 @@
 from .domain import Dossier, DossierRepository
 
+class TokenService(object):
+    def getCheckCode(self):
+        return "bar"
+        #token = Token()
+        #token.checkCode = md5(random)
+        #DBSession.merge(token)
+
+    def getToken(self, checkCode):
+        if checkCode == "bar":
+            return "foo"
+        return False
+
+    def isValid(self, token):
+        if token == "foo":
+            return True
+        return False
+
 class WalletService(object):
     def fileDossier(self, owner_hash, access_hash, content):
         dossier = self.retrieveDossier(owner_hash, access_hash)

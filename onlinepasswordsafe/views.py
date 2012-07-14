@@ -3,11 +3,24 @@ from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
 
-from .application import WalletService
+from .application import WalletService, TokenService
+
+def isInvalidToken(request):
+    ts = TokenService()
+    try:
+        return not ts.isValid(request.params['token'])
+    except:
+        return True
+
+def respondWithAccessError(request):
+    request.response.status = "403 Forbidden: Missing or invalid token"
+    return {}
 
 @view_config(route_name='save', renderer="string")
 @view_config(route_name='save.json', renderer="json", xhr=False)
 def save(request):
+    if isInvalidToken(request):
+        return respondWithAccessError(request)
     walletService = WalletService()
     success = walletService.fileDossier(request.params['owner_hash'], request.params['access_hash'], request.params['content'])
     if success:
@@ -19,6 +32,8 @@ def save(request):
 @view_config(route_name='load', renderer="string")
 @view_config(route_name='load.json', renderer="json", xhr=False)
 def load(request):
+    if isInvalidToken(request):
+        return respondWithAccessError(request)
     walletService = WalletService()
     try:
         allowed = walletService.canAccessDossier(request.params['owner_hash'], request.params['access_hash'])
@@ -40,6 +55,8 @@ def load(request):
 
 @view_config(route_name='changeAccessHash.json', renderer="json", xhr=False)
 def changeAccessHash(request):
+    if isInvalidToken(request):
+        return respondWithAccessError(request)
     walletService = WalletService()
     request.response.status_int = 200
     success = True
@@ -50,7 +67,16 @@ def changeAccessHash(request):
         success = False
     return {'success': success}
 
-
+@view_config(route_name='getToken.json', renderer="json", xhr=False)
+def getToken(request):
+    tokenService = TokenService()
+    token = tokenService.getToken(request.params['checkCode'])
+    if token:
+        request.response.status_int = 200
+        return {'token': token}
+    else:
+        request.response.status_int = 400
+        return False
 
 
 conn_err_msg = """\
