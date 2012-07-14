@@ -44,8 +44,8 @@ def changeAccessHash(request):
     request.response.status_int = 200
     success = True
     try:
-        WalletService.changeAccessHash(request.params['owner_hash'], request.params['old_access_hash'], request.params['new_access_hash'])
-    except:
+        walletService.changeAccessHash(owner_hash=request.params['owner_hash'], old_access_hash=request.params['old_access_hash'], new_access_hash=request.params['new_access_hash'])
+    except Exception as e:
         request.response.status_int = 401
         success = False
     return {'success': success}
