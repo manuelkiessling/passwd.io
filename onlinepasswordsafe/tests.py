@@ -210,14 +210,16 @@ class FunctionalTests(unittest.TestCase):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&old_access_hash=2222222222222222&new_access_hash=3333333333333333', status=200) 
+        post_params = {'owner_hash': '1111111111111111', 'old_access_hash': '2222222222222222', 'new_access_hash': '3333333333333333'}
+        res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=200) 
         self.assertTrue(res.json['success'])
 
     def test_change_access_hash_fails(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&old_access_hash=4444444444444444&new_access_hash=3333333333333333', status=401) 
+        post_params = {'owner_hash': '1111111111111111', 'old_access_hash': '4444444444444444', 'new_access_hash': '3333333333333333'}
+        res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=401) 
         self.assertFalse(res.json['success'])
 
     def test_get_token(self):
