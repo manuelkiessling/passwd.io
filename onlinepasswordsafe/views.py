@@ -36,8 +36,8 @@ def load(request):
     try:
         allowed = walletService.canAccessDossier(request.params['owner_hash'], request.params['access_hash'])
         if not allowed:
-            request.response.status_int = 401
-            return {'status': 'Not allowed'}
+            request.response.status_int = 400
+            return {'status': 'Not allowed to request this dossier'}
     except Exception as e:
             request.response.status_int = 400
             return {'status': 'Bad request'}
@@ -61,7 +61,7 @@ def changeAccessHash(request):
     try:
         walletService.changeAccessHash(owner_hash=request.params['owner_hash'], old_access_hash=request.params['old_access_hash'], new_access_hash=request.params['new_access_hash'])
     except Exception as e:
-        request.response.status_int = 401
+        request.response.status_int = 400
         success = False
     return {'success': success}
 

@@ -192,7 +192,7 @@ class FunctionalTests(unittest.TestCase):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=401) 
+        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=400) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
 
@@ -219,7 +219,7 @@ class FunctionalTests(unittest.TestCase):
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
         post_params = {'owner_hash': '1111111111111111', 'old_access_hash': '4444444444444444', 'new_access_hash': '3333333333333333'}
-        res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=401) 
+        res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=400) 
         self.assertFalse(res.json['success'])
 
     def test_get_token(self):
@@ -239,6 +239,12 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
         self.testapp.post('/save.json?token=invalid', post_params, status=403)
         self.testapp.post('/save.json', post_params, status=403)
+        self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=2222222222222222', status=200)
+        self.testapp.get('/load.json?token=invalid&owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
+        self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
+        self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&new_access_hash=3333333333333333&old_access_hash=2222222222222222', status=200)
+        self.testapp.get('/changeAccessHash.json?token=invalid&owner_hash=1111111111111111&new_access_hash=4444444444444444&old_access_hash=3333333333333333', status=403)
+        self.testapp.get('/changeAccessHash.json?owner_hash=1111111111111111&new_access_hash=4444444444444444&old_access_hash=3333333333333333', status=403)
 
 def getToken():
     ts = TokenService()
