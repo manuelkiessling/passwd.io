@@ -15,10 +15,10 @@
         <script type="text/javascript" src="index.js"></script>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="span3"></div>
-                <div id="content" class="span6 well">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span1">&nbsp;</div>
+                <div id="content" class="span8 well">
                     <script type="text/x-handlebars">
                         <fieldset>
                             <div class="control-group">
@@ -34,9 +34,9 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="submit" class="btn" {{action "loadDossier" target="App.editorController"}}>Load dossier</button>
-                                    <button id="savebutton" type="submit" class="btn" {{action "saveDossier" target="App.editorController"}}>Save dossier</button>
                                     <span id="statuslabel" {{bindAttr class="App.editorController.statusLabelType :label"}}>{{App.editorController.statusMessage}}</span>
+                                    <button id="loadbutton" type="submit" class="btn" {{action "loadDossier" target="App.editorController"}}>Load dossier</button>
+                                    <button id="savebutton" type="submit" class="btn" {{action "saveDossier" target="App.editorController"}}>Save dossier</button>
                                 </div>
                             </div>
 
@@ -48,7 +48,7 @@
                         </fieldset>
                     </script>
                 </div>
-                <div class="span3"></div>
+                <div class="span3">&nbsp;</div>
             </div>
         </div>
     </body>
