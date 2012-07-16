@@ -1,21 +1,30 @@
+import uuid, sha
 from .domain import Dossier, DossierRepository
+from .models import DBSession, Token
 
 class TokenService(object):
-    def getCheckCode(self):
-        return "bar"
-        #token = Token()
-        #token.checkCode = md5(random)
-        #DBSession.merge(token)
+    def getVerificationCode(self, token):
+        tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        return tokenData.verification_code
 
-    def getToken(self, checkCode):
-        if checkCode == "bar":
-            return "foo"
-        return False
+    def getToken(self):
+        token = Token()
+        token.token = sha.new(str(uuid.uuid4()) + '#+*dehju7/((3652fvcXXYdgzu"1238765ggxxxpP').hexdigest()
+        token.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:6]
+        DBSession.merge(token)
+        return token.token
 
-    def isValid(self, token):
-        if token == "foo":
-            return True
-        return False
+    def activate(self, token):
+        tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        token = Token()
+        token.token = tokenData.token
+        token.verification_code = tokenData.verification_code
+        token.activated = True
+        DBSession.merge(token)
+
+    def isActivated(self, token):
+        tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        return tokenData.activated
 
 class WalletService(object):
     def fileDossier(self, owner_hash, access_hash, content):

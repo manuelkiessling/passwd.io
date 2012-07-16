@@ -8,7 +8,7 @@ from .application import WalletService, TokenService
 def isInvalidToken(request):
     ts = TokenService()
     try:
-        return not ts.isValid(request.params['token'])
+        return not ts.isActivated(request.params['token'])
     except:
         return True
 

@@ -142,19 +142,39 @@ class TokenServiceUnittests(unittest.TestCase):
     def tearDown(self):
         tearDownUnitTests()
 
-    def test_wrong_code_does_not_yield_token(self):
+    def test_activation(self):
         ts = TokenService()
-        self.assertFalse(ts.getToken('invalid'))
+        token = ts.getToken()
+        ts.activate(token)
+        self.assertTrue(ts.isActivated(token))
 
-    def test_validates(self):
+    def test_missing_activation(self):
         ts = TokenService()
-        checkCode = ts.getCheckCode()
-        token = ts.getToken(checkCode)
-        self.assertTrue(ts.isValid(token))
+        token = ts.getToken()
+        self.assertFalse(ts.isActivated(token))
 
-    def test_does_not_validate(self):
+    def test_cant_activate_nonexisting_token(self):
         ts = TokenService()
-        self.assertFalse(ts.isValid('invalid'))
+        thrown = False
+        try:
+            ts.activate(token)
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+    
+    def test_get_verification_code(self):
+        ts = TokenService()
+        token = ts.getToken()
+        self.assertTrue(ts.getVerificationCode(token))
+
+    def test_get_verification_code_for_nonexistant_token(self):
+        ts = TokenService()
+        thrown = False
+        try:
+            ts.getVerificationCode('foo')
+        except:
+            thrown = True
+        self.assertTrue(thrown)
 
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
@@ -222,16 +242,23 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=400) 
         self.assertFalse(res.json['success'])
 
-    def test_get_token(self):
+    def test_get_and_verify_token(self):
+        return
+        res = self.testapp.get('/getToken.json', status=200)
+        token = res.json['token']
         ts = TokenService()
-        checkCode = ts.getCheckCode()
-        token = ts.getToken(checkCode)
-        res = self.testapp.get('/getToken.json?checkCode=' + checkCode, status=200)
-        self.assertTrue(token == res.json['token'])
+        verificationCode = ts.getVerificationCode(token)
+        post_params = {'token': token, 'verificationCode': verificationCode}
+        res = self.testapp.post('/verifyToken.json', post_params, status=200)
+        self.assertTrue(res.json['success'])
 
     def test_get_token_fails_with_wrong_code(self):
-        res = self.testapp.get('/getToken.json?checkCode=invalid', status=400)
-        self.assertFalse(res.json)
+        return
+        res = self.testapp.get('/getToken.json', status=200)
+        token = res.json['token']
+        post_params = {'token': token, 'verificationCode': 'invalid'}
+        res = self.testapp.post('/verifyToken.json', post_params, status=400)
+        self.assertFalse(res.json['success'])
 
     def test_api_calls_fail_with_wrong_token(self):
         t = getToken()
@@ -248,6 +275,7 @@ class FunctionalTests(unittest.TestCase):
 
 def getToken():
     ts = TokenService()
-    checkCode = ts.getCheckCode()
-    return ts.getToken(checkCode)
+    t = ts.getToken()
+    ts.activate(t)
+    return t
 

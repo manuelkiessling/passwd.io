@@ -3,6 +3,7 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
+    Boolean,
     )
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -33,3 +34,10 @@ class File(Base):
     owner_hash = Column(String(40), unique=True)
     access_hash = Column(String(40))
     content = Column(Text)
+
+class Token(Base):
+    __tablename__ = 'tokens'
+    token = Column(String(40), default="", nullable=False, primary_key=True)
+    verification_code = Column(String(6))
+    activated = Column(Boolean())
+
