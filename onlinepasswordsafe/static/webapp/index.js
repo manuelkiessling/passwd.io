@@ -84,7 +84,7 @@ App.editorController = Em.Object.create({
             var access_hash = sjcl.misc.pbkdf2(me.get("password"), "", 10000).toString();
             var encrypted = sjcl.json.encrypt(me.get("password"), me.get("content"));
             var post = $.post(
-                "http://localhost:6543/save.json",
+                "http://localhost:6543/save.json?token=" + App.verificationController.token,
                 { "owner_hash": owner_hash,
                   "access_hash": access_hash,
                   "content": encrypted }
