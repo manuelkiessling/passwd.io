@@ -38,7 +38,7 @@ App.verificationController = Em.Object.create({
         var url = '/activateToken.json'
         var post = $.post(
             url,
-            { 'token': me.get('token'), 'verificationCode': me.get('verificationCode') }
+            { 'token': me.get('token'), 'verification_code': me.get('verificationCode') }
         );
     }
 });
@@ -58,7 +58,7 @@ App.editorController = Em.Object.create({
             var owner_hash = sjcl.misc.pbkdf2(me.get("username"), "", 10000).toString();
             var access_hash = sjcl.misc.pbkdf2(me.get("password"), "", 10000).toString();
             var url = 'http://localhost:6543/load.json'
-                url += '?owner_hash=%@&access_hash=%@'.fmt(owner_hash, access_hash);
+                url += '?token=%@&owner_hash=%@&access_hash=%@'.fmt(App.verificationController.token, owner_hash, access_hash);
             var getJSON = $.getJSON(url, function(data) {
                 $(data).each(function(index, value) {
                     me.set("content", sjcl.json.decrypt(me.get("password"), value.content));

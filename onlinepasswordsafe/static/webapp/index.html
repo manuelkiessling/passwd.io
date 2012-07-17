@@ -15,12 +15,18 @@
         <script type="text/javascript" src="index.js"></script>
     </head>
     <body>
+        <div id="captchaVerification">
+            <script type="text/x-handlebars">
+                <img {{bindAttr src="App.verificationController.captchaUrl"}}>
+                {{view App.VerificationCodeField class="input-xlarge" id="verificationCode" placeholder="captcha code" valueBinding="App.verificationController.verificationCode"}}
+                <button id="captchabutton" type="submit" class="btn" {{action "activateToken" target="App.verificationController"}}>Verify</button>
+            </script>
+        </div>
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span1">&nbsp;</div>
                 <div id="content" class="span8 well">
                     <script type="text/x-handlebars">
-                        <img {{bindAttr src="App.verificationController.captchaUrl"}}>
                         <fieldset>
                             <div class="control-group">
                                 <div class="controls">
