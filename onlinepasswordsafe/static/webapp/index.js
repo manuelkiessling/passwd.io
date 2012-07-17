@@ -11,6 +11,28 @@ App.PasswordField = Em.TextField.extend({
 
 App.ContentField = Em.TextArea.extend();
 
+App.verificationController = Em.Object.create({
+    token: '',
+    verificationCode: '',
+    getToken: function() {
+        var me = this;
+        var url = '/getToken.json';
+        var getJSON = $.getJSON(url, function(data) {
+            $(data).each(function(index, value) {
+                me.set('token', value.token);
+            })
+        });
+    },
+    activateToken: function() {
+        var me = this;
+        var url = '/activateToken.json'
+        var post = $.post(
+            url,
+            { 'token': me.get('token'), 'verificationCode': me.get('verificationCode') }
+        );
+    }
+});
+
 App.editorController = Em.Object.create({
     username: '',
     password: '',

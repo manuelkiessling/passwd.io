@@ -15,6 +15,8 @@ def main(global_config, **settings):
     config.add_route('load.json', '/load.json')
     config.add_route('changeAccessHash.json', '/changeAccessHash.json')
     config.add_route('getToken.json', '/getToken.json')
+    config.add_route('activateToken.json', '/activateToken.json')
+    config.add_route('getCaptcha.png', '/getCaptcha.png')
     config.scan()
     return config.make_wsgi_app()
 

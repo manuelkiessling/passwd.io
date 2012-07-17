@@ -242,23 +242,29 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=400) 
         self.assertFalse(res.json['success'])
 
-    def test_get_and_verify_token(self):
-        return
+    def test_get_and_activate_token(self):
         res = self.testapp.get('/getToken.json', status=200)
         token = res.json['token']
         ts = TokenService()
         verificationCode = ts.getVerificationCode(token)
-        post_params = {'token': token, 'verificationCode': verificationCode}
-        res = self.testapp.post('/verifyToken.json', post_params, status=200)
+        post_params = {'token': token, 'verification_code': verificationCode}
+        res = self.testapp.post('/activateToken.json', post_params, status=200)
         self.assertTrue(res.json['success'])
 
     def test_get_token_fails_with_wrong_code(self):
-        return
         res = self.testapp.get('/getToken.json', status=200)
         token = res.json['token']
-        post_params = {'token': token, 'verificationCode': 'invalid'}
-        res = self.testapp.post('/verifyToken.json', post_params, status=400)
+        post_params = {'token': token, 'verification_code': 'invalid'}
+        res = self.testapp.post('/activateToken.json', post_params, status=400)
         self.assertFalse(res.json['success'])
+
+    def test_get_captcha(self):
+        res = self.testapp.get('/getToken.json', status=200)
+        token = res.json['token']
+        res = self.testapp.get('/getCaptcha.png?token=' + token, status=200)
+
+    def test_get_captcha_fails(self):
+        res = self.testapp.get('/getCaptcha.png?token=invalid', status=400)
 
     def test_api_calls_fail_with_wrong_token(self):
         t = getToken()

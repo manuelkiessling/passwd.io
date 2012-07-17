@@ -68,14 +68,43 @@ def changeAccessHash(request):
 @view_config(route_name='getToken.json', renderer="json", xhr=False)
 def getToken(request):
     tokenService = TokenService()
-    token = tokenService.getToken(request.params['checkCode'])
+    token = tokenService.getToken()
     if token:
         request.response.status_int = 200
         return {'token': token}
     else:
-        request.response.status_int = 400
+        request.response.status_int = 500
         return False
 
+@view_config(route_name='activateToken.json', renderer="json", xhr=False)
+def activateToken(request):
+    tokenService = TokenService()
+    token = request.params['token']
+    try:
+        verificationCode = tokenService.getVerificationCode(token)
+    except:
+        request.response.status_int = 400
+        return {'success': False}
+    if verificationCode == request.params['verification_code']:
+        try:
+            tokenService.activate(token)
+            return {'success': True}
+        except:
+            request.response.status_int = 400
+            return {'success': False}
+    else:
+        request.response.status_int = 400
+        return {'success': False}
+
+@view_config(route_name='getCaptcha.png', renderer="json", xhr=False)
+def getCaptcha(request):
+    tokenService = TokenService()
+    try:
+        verificationCode = tokenService.getVerificationCode(request.params['token'])
+        return {'verificationCode': verificationCode}
+    except:
+        request.response.status_int = 400
+        return False
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
