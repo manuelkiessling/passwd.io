@@ -16,7 +16,8 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'WebTest',
-    'BeautifulSoup'
+    'BeautifulSoup',
+    'skimpyGimpy'
     ]
 
 setup(name='OnlinePasswordSafe',

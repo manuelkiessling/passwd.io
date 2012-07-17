@@ -1,6 +1,8 @@
 App = Em.Application.create();
 
 
+App.VerificationCodeField = Em.TextField.extend();
+
 App.UsernameField = Em.TextField.extend();
 
 App.PasswordField = Em.TextField.extend({
@@ -14,6 +16,7 @@ App.ContentField = Em.TextArea.extend();
 App.verificationController = Em.Object.create({
     token: '',
     verificationCode: '',
+    captchaUrl: '',
     getToken: function() {
         var me = this;
         var url = '/getToken.json';
@@ -22,6 +25,13 @@ App.verificationController = Em.Object.create({
                 me.set('token', value.token);
             })
         });
+        getJSON.success(function() {
+            me.loadCaptcha();
+        });
+    },
+    loadCaptcha: function() {
+        var me = this;
+        this.set('captchaUrl', '/getCaptcha.png?token=' + me.get('token'));
     },
     activateToken: function() {
         var me = this;
@@ -32,6 +42,8 @@ App.verificationController = Em.Object.create({
         );
     }
 });
+
+App.verificationController.getToken();
 
 App.editorController = Em.Object.create({
     username: '',

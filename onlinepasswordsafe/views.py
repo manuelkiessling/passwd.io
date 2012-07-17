@@ -96,15 +96,21 @@ def activateToken(request):
         request.response.status_int = 400
         return {'success': False}
 
-@view_config(route_name='getCaptcha.png', renderer="json", xhr=False)
+@view_config(route_name='getCaptcha.png')
 def getCaptcha(request):
     tokenService = TokenService()
     try:
         verificationCode = tokenService.getVerificationCode(request.params['token'])
-        return {'verificationCode': verificationCode}
+        from skimpyGimpy import skimpyAPI
+        imageData = skimpyAPI.Png(verificationCode,
+                                  color='aaaaaa',
+                                  fontpath='/home/manuel/Downloads/10x20.bdf',
+                                  speckle=1.8,
+                                  scale=2.0).data()
+        return Response(body=imageData, content_type='image/png')
     except:
         request.response.status_int = 400
-        return False
+        return Response(body='error', content_type='text/plain')
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem

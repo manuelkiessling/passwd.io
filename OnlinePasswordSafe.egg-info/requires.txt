@@ -8,3 +8,4 @@ zope.sqlalchemy
 waitress
 WebTest
 BeautifulSoup
+skimpyGimpy
