@@ -40,6 +40,9 @@ App.verificationController = Em.Object.create({
             url,
             { 'token': me.get('token'), 'verification_code': me.get('verificationCode') }
         );
+        post.success(function() {
+          $('#captchaverification-layer').fadeOut(); 
+        });
     }
 });
 
