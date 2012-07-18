@@ -102,9 +102,10 @@ def getCaptcha(request):
     try:
         verificationCode = tokenService.getVerificationCode(request.params['token'])
         from skimpyGimpy import skimpyAPI
+        import os
         imageData = skimpyAPI.Png(verificationCode,
                                   color='aaaaaa',
-                                  fontpath='/home/manuel/Downloads/10x20.bdf',
+                                  fontpath=os.getcwd() + '/fonts/10x20.bdf',
                                   speckle=1.8,
                                   scale=2.0).data()
         return Response(body=imageData, content_type='image/png')
