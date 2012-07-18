@@ -8,7 +8,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #eee;
+  background-color: #ddd;
   height: 100%;
   width: 100%;
 }
@@ -16,8 +16,9 @@ body {
 #captchaverification-box {
   margin: 0 auto;
   width: 300px;
-  margin-top: 40px;
+  margin-top: 6px;
   text-align: center;
+	box-shadow: 0px 0px 16px 3px #ccc;
 }
 
 #captcha-image {
@@ -27,6 +28,7 @@ body {
 
 #verificationcode {
   width: 109px;
+  text-align: center;
 }
 
 #captcha-button {
