@@ -26,7 +26,7 @@ def save(request):
         request.response.status_int = 500
     return {'success': success}
 
-@view_config(route_name='load.json', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/load', renderer='json', xhr=False)
 def load(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)

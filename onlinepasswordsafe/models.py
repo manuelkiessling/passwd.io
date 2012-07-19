@@ -30,14 +30,14 @@ class MyModel(Base):
 
 class File(Base):
     __tablename__ = 'files'
-    id = Column(String(36), default="", nullable=False, primary_key=True)
+    id = Column(String(36), default='', nullable=False, primary_key=True)
     owner_hash = Column(String(40), unique=True)
     access_hash = Column(String(40))
     content = Column(Text)
 
 class Token(Base):
     __tablename__ = 'tokens'
-    token = Column(String(40), default="", nullable=False, primary_key=True)
+    token = Column(String(40), default='', nullable=False, primary_key=True)
     verification_code = Column(String(6))
     activated = Column(Boolean())
 

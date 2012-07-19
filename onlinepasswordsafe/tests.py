@@ -224,25 +224,25 @@ class FunctionalTests(unittest.TestCase):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/load.json?token=' + t +'&owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
+        res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
         self.assertTrue(b'fdjs9884jhf98' in res.body)
 
     def test_load_wrongaccesshash(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=400) 
+        res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=400) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
 
     def test_load_failsIfOwnerHashIsTooShort(self):
         t = getToken()
-        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
+        res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=111111111111111&access_hash=3333333333333333', status=400) 
         self.assertTrue(b'Bad request' in res.body)
 
     def test_load_failsIfAccessHashIsTooShort(self):
         t = getToken()
-        res = self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
+        res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=333333333333333', status=400) 
         self.assertTrue(b'Bad request' in res.body)
 
     def test_change_access_hash(self):
@@ -291,9 +291,9 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.post('/save.json?token=' + t, post_params, status=200)
         self.testapp.post('/save.json?token=invalid', post_params, status=403)
         self.testapp.post('/save.json', post_params, status=403)
-        self.testapp.get('/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=2222222222222222', status=200)
-        self.testapp.get('/load.json?token=invalid&owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
-        self.testapp.get('/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
+        self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=2222222222222222', status=200)
+        self.testapp.get('/api/dossier/load.json?token=invalid&owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
+        self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
         self.testapp.get('/changeAccessHash.json?token=' + t + '&owner_hash=1111111111111111&new_access_hash=3333333333333333&old_access_hash=2222222222222222', status=200)
         self.testapp.get('/changeAccessHash.json?token=invalid&owner_hash=1111111111111111&new_access_hash=4444444444444444&old_access_hash=3333333333333333', status=403)
         self.testapp.get('/changeAccessHash.json?owner_hash=1111111111111111&new_access_hash=4444444444444444&old_access_hash=3333333333333333', status=403)

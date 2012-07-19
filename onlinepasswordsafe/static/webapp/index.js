@@ -60,7 +60,7 @@ App.editorController = Em.Object.create({
             me.setLabelType('default');
             var owner_hash = sjcl.misc.pbkdf2(me.get("username"), "", 10000).toString();
             var access_hash = sjcl.misc.pbkdf2(me.get("password"), "", 10000).toString();
-            var url = '/load.json'
+            var url = '/api/dossier/load.json'
                 url += '?token=%@&owner_hash=%@&access_hash=%@'.fmt(App.verificationController.token, owner_hash, access_hash);
             var getJSON = $.getJSON(url, function(data) {
                 $(data).each(function(index, value) {
