@@ -48,7 +48,7 @@ class WalletService(object):
     def changeAccessHash(self, owner_hash, old_access_hash, new_access_hash):
         dossier = self.retrieveDossier(owner_hash, old_access_hash)
         if not dossier:
-            raise Exception("can't change access_hash, access denied")
+            raise Exception('can\'t change access_hash, access denied')
 
         dossier.access_hash = new_access_hash
         repo = DossierRepository()
