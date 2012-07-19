@@ -62,6 +62,25 @@ class DomainUnitTests(unittest.TestCase):
             thrown = True
         self.assertTrue(thrown)
 
+    def test_cant_store_dossier_with_invalid_hashes(self):
+        repo = DossierRepository()
+        dossier = Dossier(owner_hash='1111111111111111', access_hash='2222222222222222', content='Hello World')
+        dossier.owner_hash = '111111111111111'
+        thrown = False
+        try:
+            repo.store(dossier)
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+        dossier.owner_hash = '1111111111111111'
+        dossier.access_hash = '222222222222222'
+        thrown = False
+        try:
+            repo.store(dossier)
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+
     def test_can_store_dossier_with_existing_owner_hash_with_different_access_hash(self):
         repo = DossierRepository()
         dossier = Dossier(owner_hash='1111111111111111', access_hash='3333333333333333', content='Hello World')

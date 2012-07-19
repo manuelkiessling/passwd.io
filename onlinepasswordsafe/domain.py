@@ -18,18 +18,19 @@ class Dossier(object):
             self.id = id
 
         if content == None:
-            self.content = ""
+            self.content = ''
         else:
             self.content = content
 
 class DossierRepository(object):
     def store(self, dossier):
+        dv = DossierValidation()
+        dv.validateOwnerHash(dossier.owner_hash)
+        dv.validateAccessHash(dossier.access_hash)
         existing_dossier = self._findByOwnerHash(dossier.owner_hash)
         if existing_dossier:
-#            if existing_dossier.access_hash != dossier.access_hash:
-#                raise Exception("can't store dossier if access_hash differs")
             if existing_dossier.id != dossier.id:
-                raise Exception("can't store dossier if id differs")
+                raise Exception('can\'t store dossier if id differs')
         file = File()
         file.id = dossier.id
         file.owner_hash = dossier.owner_hash
@@ -52,6 +53,8 @@ class DossierRepository(object):
             raise
 
     def _findByOwnerHash(self, owner_hash):
+        dv = DossierValidation()
+        dv.validateOwnerHash(owner_hash)
         try:
             dossierData = DBSession.query(File).filter(File.owner_hash==owner_hash).first()
             if dossierData:
@@ -77,9 +80,9 @@ class DossierValidation(object):
 
     def validateOwnerHash(self, owner_hash):
         if not self.hashIsLongEnough(owner_hash):
-            raise Exception("owner_hash is too short")
+            raise Exception('owner_hash is too short')
 
     def validateAccessHash(self, access_hash):
         if not self.hashIsLongEnough(access_hash):
-            raise Exception("access_hash is too short")
+            raise Exception('access_hash is too short')
 
