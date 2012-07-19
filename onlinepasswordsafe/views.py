@@ -22,9 +22,7 @@ def save(request):
         return respondWithAccessError(request)
     walletService = WalletService()
     success = walletService.fileDossier(request.params['owner_hash'], request.params['access_hash'], request.params['content'])
-    if success:
-        request.response.status_int = 200
-    else:
+    if not success:
         request.response.status_int = 500
     return {'success': success}
 
@@ -43,7 +41,6 @@ def load(request):
             return {'status': 'Bad request'}
     dossier = walletService.retrieveDossier(request.params['owner_hash'], request.params['access_hash'])
     if dossier:
-        request.response.status_int = 200
         return { 'owner_hash': dossier.owner_hash,
                  'access_hash': dossier.access_hash,
                  'content': dossier.content }
@@ -56,7 +53,6 @@ def changeAccessHash(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)
     walletService = WalletService()
-    request.response.status_int = 200
     success = True
     try:
         walletService.changeAccessHash(owner_hash=request.params['owner_hash'], old_access_hash=request.params['old_access_hash'], new_access_hash=request.params['new_access_hash'])
@@ -70,7 +66,6 @@ def getToken(request):
     tokenService = TokenService()
     token = tokenService.getToken()
     if token:
-        request.response.status_int = 200
         return {'token': token}
     else:
         request.response.status_int = 500
