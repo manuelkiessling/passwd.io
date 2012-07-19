@@ -3,7 +3,9 @@
     <head>
         <title>Online Password Safe</title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
         <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-responsive.min.css">
@@ -16,7 +18,7 @@
     </head>
     <body>
         <div id="captchaverification-layer">
-            <div id="captchaverification-box" class="well">
+            <div id="captchaverification-box">
               <span>Please verify that
                     <br>
                     you are a human being:</span>
@@ -31,12 +33,13 @@
         </div>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span1">&nbsp;</div>
-                <div id="content" class="span8 well">
+                <div class="span2">&nbsp;</div>
+                <div id="content" class="span8">
                     <script type="text/x-handlebars">
                         <fieldset>
                             <div class="control-group">
                                 <div class="controls">
+                                    <span id="statuslabel" {{bindAttr class="App.editorController.statusLabelType :label"}}>{{App.editorController.statusMessage}}</span>
                                     {{view App.UsernameField class="input-xlarge" id="username" placeholder="Username" valueBinding="App.editorController.username"}}
                                 </div>
                             </div>
@@ -48,7 +51,6 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    <span id="statuslabel" {{bindAttr class="App.editorController.statusLabelType :label"}}>{{App.editorController.statusMessage}}</span>
                                     <button id="loadbutton" type="submit" class="btn" {{action "loadDossier" target="App.editorController"}}>Load dossier</button>
                                     <button id="savebutton" type="submit" class="btn" {{action "saveDossier" target="App.editorController"}}>Save dossier</button>
                                 </div>
@@ -56,13 +58,13 @@
 
                             <div class="control-group">
                                 <div class="controls">
-                                    {{view App.ContentField placeholder="" valueBinding="App.editorController.content" class="input-xlarge" rows="20"}}
+                                    {{view App.ContentField placeholder="" valueBinding="App.editorController.content" class="input-xlarge"}}
                                 </div>
                             </div>
                         </fieldset>
                     </script>
                 </div>
-                <div class="span3">&nbsp;</div>
+                <div class="span2">&nbsp;</div>
             </div>
         </div>
     </body>

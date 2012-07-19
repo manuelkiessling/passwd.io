@@ -11,14 +11,13 @@ body {
   background-color: #ddd;
   height: 100%;
   width: 100%;
+  padding: 8px;
 }
 
 #captchaverification-box {
   margin: 0 auto;
   width: 300px;
-  margin-top: 6px;
   text-align: center;
-	box-shadow: 0px 0px 16px 3px #ccc;
 }
 
 #captcha-image {
@@ -37,9 +36,6 @@ body {
 }
 
 #content {
-	/*background-color: #ddd;*/
-	margin-top: 6px;
-	box-shadow: 0px 0px 16px 3px #ccc;
 }
 
 #statuslabel {
@@ -60,5 +56,5 @@ body {
 }
 
 .input-xlarge {
-	width: 98%;
+  width: 98%;
 }
