@@ -111,7 +111,7 @@ def getCaptcha(request):
         return Response(body=imageData, content_type='image/png')
     except:
         request.response.status_int = 400
-        return Response(body='error', content_type='text/plain')
+        return Response(body='error', content_type='text/plain', status='400')
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
