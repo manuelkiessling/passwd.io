@@ -13,10 +13,10 @@ def isInvalidToken(request):
         return True
 
 def respondWithAccessError(request):
-    request.response.status = "403 Forbidden: Missing or invalid token"
+    request.response.status = '403 Forbidden: Missing or invalid token'
     return {}
 
-@view_config(route_name='save.json', renderer="json", xhr=False)
+@view_config(route_name='save.json', renderer='json', xhr=False)
 def save(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)
@@ -28,7 +28,7 @@ def save(request):
         request.response.status_int = 500
     return {'success': success}
 
-@view_config(route_name='load.json', renderer="json", xhr=False)
+@view_config(route_name='load.json', renderer='json', xhr=False)
 def load(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)
@@ -51,7 +51,7 @@ def load(request):
         request.response.status_int = 500
         return {'status': 'error'}
 
-@view_config(route_name='changeAccessHash.json', renderer="json", xhr=False)
+@view_config(route_name='changeAccessHash.json', renderer='json', xhr=False)
 def changeAccessHash(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)
@@ -65,7 +65,7 @@ def changeAccessHash(request):
         success = False
     return {'success': success}
 
-@view_config(route_name='getToken.json', renderer="json", xhr=False)
+@view_config(route_name='getToken.json', renderer='json', xhr=False)
 def getToken(request):
     tokenService = TokenService()
     token = tokenService.getToken()
@@ -76,7 +76,7 @@ def getToken(request):
         request.response.status_int = 500
         return False
 
-@view_config(route_name='activateToken.json', renderer="json", xhr=False)
+@view_config(route_name='activateToken.json', renderer='json', xhr=False)
 def activateToken(request):
     tokenService = TokenService()
     token = request.params['token']
@@ -110,7 +110,6 @@ def getCaptcha(request):
                                   scale=2.0).data()
         return Response(body=imageData, content_type='image/png')
     except:
-        request.response.status_int = 400
         return Response(body='error', content_type='text/plain', status='400')
 
 conn_err_msg = """\
