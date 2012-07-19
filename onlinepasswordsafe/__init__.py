@@ -11,7 +11,7 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
-    config.add_route('save.json', '/save.json')
+    config.add_route('/api/dossier/save', '/api/dossier/save.json')
     config.add_route('/api/dossier/load', '/api/dossier/load.json')
     config.add_route('changeAccessHash.json', '/changeAccessHash.json')
     config.add_route('getToken.json', '/getToken.json')

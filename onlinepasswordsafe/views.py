@@ -16,7 +16,7 @@ def respondWithAccessError(request):
     request.response.status = '403 Forbidden: Missing or invalid token'
     return {}
 
-@view_config(route_name='save.json', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/save', renderer='json', xhr=False)
 def save(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)

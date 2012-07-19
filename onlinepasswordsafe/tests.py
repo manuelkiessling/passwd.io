@@ -217,20 +217,20 @@ class FunctionalTests(unittest.TestCase):
     def test_save(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        res = self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         self.assertTrue(res.json['success'])
 
     def test_load(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
         self.assertTrue(b'fdjs9884jhf98' in res.body)
 
     def test_load_wrongaccesshash(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=3333333333333333', status=400) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
@@ -248,7 +248,7 @@ class FunctionalTests(unittest.TestCase):
     def test_change_access_hash(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         post_params = {'owner_hash': '1111111111111111', 'old_access_hash': '2222222222222222', 'new_access_hash': '3333333333333333'}
         res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=200) 
         self.assertTrue(res.json['success'])
@@ -256,7 +256,7 @@ class FunctionalTests(unittest.TestCase):
     def test_change_access_hash_fails(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         post_params = {'owner_hash': '1111111111111111', 'old_access_hash': '4444444444444444', 'new_access_hash': '3333333333333333'}
         res = self.testapp.post('/changeAccessHash.json?token=' + t, post_params, status=400) 
         self.assertFalse(res.json['success'])
@@ -288,9 +288,9 @@ class FunctionalTests(unittest.TestCase):
     def test_api_calls_fail_with_wrong_token(self):
         t = getToken()
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/save.json?token=' + t, post_params, status=200)
-        self.testapp.post('/save.json?token=invalid', post_params, status=403)
-        self.testapp.post('/save.json', post_params, status=403)
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json?token=invalid', post_params, status=403)
+        self.testapp.post('/api/dossier/save.json', post_params, status=403)
         self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111&access_hash=2222222222222222', status=200)
         self.testapp.get('/api/dossier/load.json?token=invalid&owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
         self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111&access_hash=2222222222222222', status=403)
