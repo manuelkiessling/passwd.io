@@ -99,7 +99,7 @@ def getCaptcha(request):
         from skimpyGimpy import skimpyAPI
         import os
         imageData = skimpyAPI.Png(verificationCode,
-                                  color='aaaaaa',
+                                  color='bbbbbb',
                                   fontpath=os.getcwd() + '/fonts/10x20.bdf',
                                   speckle=1.8,
                                   scale=2.0).data()
