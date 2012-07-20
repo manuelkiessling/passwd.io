@@ -48,7 +48,7 @@ def load(request):
         request.response.status_int = 500
         return {'status': 'error'}
 
-@view_config(route_name='changeAccessHash.json', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/change_access_hash', renderer='json', xhr=False)
 def changeAccessHash(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)

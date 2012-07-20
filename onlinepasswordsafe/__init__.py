@@ -13,7 +13,7 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('/api/dossier/save', '/api/dossier/save.json')
     config.add_route('/api/dossier/load', '/api/dossier/load.json')
-    config.add_route('changeAccessHash.json', '/changeAccessHash.json')
+    config.add_route('/api/dossier/change_access_hash', '/api/dossier/change_access_hash.json')
     config.add_route('getToken.json', '/getToken.json')
     config.add_route('activateToken.json', '/activateToken.json')
     config.add_route('getCaptcha.png', '/getCaptcha.png')
