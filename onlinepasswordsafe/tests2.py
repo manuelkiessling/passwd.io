@@ -195,6 +195,25 @@ class TokenServiceUnittests(unittest.TestCase):
             thrown = True
         self.assertTrue(thrown)
 
+class ThrottleServiceUnitTests(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test(self):
+        ts = ThrottleService(identifier='foo', max_total=10, max_per_second=3)
+        ts.addActivity()
+        ts.addActivity()
+        ts.addActivity()
+        thrown = False
+        try:
+            ts.addActivity()
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
         from onlinepasswordsafe import main

@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html> 
+  <head> 
+    <title>Online Password Safe</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+    <link rel="stylesheet" href="jquery.mobile-1.1.1.min.css">
+    <script src="jquery-1.7.1.min.js"></script>
+    <script src="jquery.mobile-1.1.1.min.js"></script>
+    <script type="text/javascript" src="vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/sjcl.js"></script>
+    <script src="index.js"></script>
+    <style>
+      #captcha-image {
+        vertical-align: middle;
+        padding-top: 12px;
+        padding-left: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div data-role="page" id="one" data-theme="b">
+
+      <div data-role="content">
+        <p style="text-align: center">Please authenticate:</p>
+        
+        <div class="ui-grid-a">
+          <div class="ui-block-a"><img id="captcha-image" width="116" height="26" src=""></div>
+          <div class="ui-block-b"><input type="text" id="verificationCode" value="" placeholder="Image Code"></div>
+        </div>
+                
+          <form action="#two" method="">
+            
+            <input type="text" id="username" value="" placeholder="Username">
+            <input type="text" id="username" value="" placeholder="Password">
+            <button type="submit">Load or Create</button>
+          </form>
+        </div>
+      </script>
+    </div>
+    
+    <div data-role="page" id="two" data-theme="b">
+
+      <div data-role="content">
+        <form action="" method="">
+          <button type="submit" data-icon="check">Save</button>
+          <textarea name="textarea" id="textarea-a" placeholder="Put your confidential data here and tap 'Save' to store it securely on the server." style="height: 400px;"></textarea>
+        </form>   
+      </div>
+    </div>
+
+
+  </body>
+</html>
+

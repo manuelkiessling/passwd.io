@@ -1,3 +1,54 @@
+var application = function() {
+  
+  var authformView = {
+    getVerificationCode: function() {
+      return $('#verificationcode').val();
+    },
+    getUsername: function() {
+      return $('#username').val();
+    },
+    getPassword: function() {
+      return $('#password').val();
+    },
+    setCaptchaUrl: function(url) {
+      $('#captcha-image').attr('src', url);
+    }
+  };
+
+  var authformController = {
+    _view: authformView,
+    token: null,
+    getToken: function() {
+      var me = this;
+      var url = '/getToken.json';
+      var getJSON = $.getJSON(url, function(data) {
+        $(data).each(function(index, value) {
+          me.token = value.token;
+        })
+      });
+      getJSON.success(function() {
+        me.loadCaptcha();
+      });
+    },
+    loadCaptcha: function() {
+      this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token);
+    },
+  };
+
+  $('document').ready(function() {
+    authformController.getToken();
+  });
+
+}();
+
+
+
+
+/**
+
+
+
+
 App = Em.Application.create();
 
 
@@ -60,7 +111,7 @@ App.editorController = Em.Object.create({
             me.setLabelType('default');
             var owner_hash = sjcl.misc.pbkdf2(me.get("username"), "", 10000).toString();
             var access_hash = sjcl.misc.pbkdf2(me.get("password"), "", 10000).toString();
-            var url = '/api/dossier/load.json'
+            var url = '/load.json'
                 url += '?token=%@&owner_hash=%@&access_hash=%@'.fmt(App.verificationController.token, owner_hash, access_hash);
             var getJSON = $.getJSON(url, function(data) {
                 $(data).each(function(index, value) {
@@ -108,3 +159,4 @@ App.editorController = Em.Object.create({
         this.set('statusLabelType', 'label-' + type);
     }
 });
+*/

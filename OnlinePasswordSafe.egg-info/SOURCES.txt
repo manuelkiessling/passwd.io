@@ -41,6 +41,10 @@ onlinepasswordsafe/static/transparent.gif
 onlinepasswordsafe/static/webapp/index.css
 onlinepasswordsafe/static/webapp/index.html
 onlinepasswordsafe/static/webapp/index.js
+onlinepasswordsafe/static/webapp/jquery-1.7.1.min.js
+onlinepasswordsafe/static/webapp/jquery.mobile-1.1.1.min.css
+onlinepasswordsafe/static/webapp/jquery.mobile-1.1.1.min.js
+onlinepasswordsafe/static/webapp/mobile.html
 onlinepasswordsafe/static/webapp/vendor/ember-0.9.6.min.js
 onlinepasswordsafe/static/webapp/vendor/jquery.min.js
 onlinepasswordsafe/static/webapp/vendor/sjcl.js
