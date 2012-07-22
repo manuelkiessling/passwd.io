@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
   <head> 
-    <title>Online Password Safe</title>
+    <title>passwd.io</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
 
@@ -19,23 +19,33 @@
     <div data-role="page" id="one" data-theme="b">
 
       <div data-role="content">
-        <p style="text-align: center">Please authenticate:</p>
         
         <div class="ui-grid-a">
           <div class="ui-block-a"><img id="captcha-image" width="90%" height="26" src=""></div>
           <div class="ui-block-b"><input type="text" id="verificationCode" value="" placeholder="Image code"></div>
         </div>
                 
-        <form action="#two" method="">
-          <input type="text" id="username" value="" placeholder="Username">
-          <input type="text" id="username" value="" placeholder="Password">
-          <button type="submit">Load or Create</button>
-        </form>
+        <form action="#two">
+        <input type="text" id="username" value="" placeholder="Username">
+        <input type="text" id="username" value="" placeholder="Password">
+        <button id="load-button" type="submit">Load or Create</button>
+      </form>
 
         <div class="ui-grid-b">
-          <div class="ui-block-a">a</div>
-          <div class="ui-block-b">a</div>
-          <div class="ui-block-c">a</div>
+          <div class="ui-block-a"></div>
+          <div id="help-area" class="ui-block-b">
+            <button id="help-button" data-theme="c">Help</button>
+          </div>
+          <div class="ui-block-c"></div>
+        </div>
+
+        <div class="ui-grid-b">
+          <div class="ui-block-a"></div>
+          <div id="info" class="ui-block-b">
+            <div id="logo">passwd.io</div>
+            <div id="logo-subtext">it's your data</div>
+          </div>
+          <div class="ui-block-c"></div>
         </div>
 
       </div>
@@ -45,8 +55,8 @@
 
       <div data-role="content">
         <form action="" method="">
-          <button type="submit" data-icon="check">Save</button>
-          <textarea name="textarea" id="textarea-a" placeholder="Put your confidential data here and tap 'Save' to store it securely on the server." style="height: 400px;"></textarea>
+          <button type="submit">Encrypt and Save</button>
+          <textarea name="textarea" id="dossier-content" placeholder="Put your confidential data here."></textarea>
         </form>   
       </div>
     </div>

@@ -1,3 +1,11 @@
+html {
+  background-color: #ccc;
+}
+
+.ui-content {
+  padding-top: 4px;
+}
+
 #captcha-image {
   margin-top: 8px;
   margin-bottom: 9px;
@@ -5,8 +13,31 @@
   border: 1px solid #999;
   border-radius: 9px;
   width: 87%;
-  height: 24px;
+  height: 26px;
   background-color: #F3F3F3;
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2);
 }
 
+.ui-btn > #help-button {
+  opacity: 0.5;
+}
+
+#info {
+  margin-top: 100px;
+  text-align: center;
+  font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
+}
+
+#logo {
+  font-weight: bold;
+  color: #194B7E;
+}
+
+#logo-subtext {
+  color: #666;
+  font-size: 8pt;
+}
+
+#dossier-content {
+  height: 195px;
+}

@@ -1,6 +1,11 @@
 var application = function() {
   
   var authformView = {
+    init: function() {
+      $('#load-button').click(function() {
+//$.mobile.changePage( "#two", { transition: "slideup"} );
+      });
+    },
     getVerificationCode: function() {
       return $('#verificationcode').val();
     },
@@ -36,6 +41,7 @@ var application = function() {
   };
 
   $('document').ready(function() {
+    authformView.init();
     authformController.getToken();
   });
 
