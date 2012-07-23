@@ -265,8 +265,8 @@ var application = function() {
     _view: authformView,
     token: null,
     tokenIsVerified: false,
-    username: null,
-    passphrase: null,
+    owner_hash: null,
+    access_hash: null,
     getToken: function() {
       var my = this;
       var url = '/api/token/get.json';
@@ -299,12 +299,12 @@ var application = function() {
       var my = this;
       var load = function() {
         if ( my._view.getUsername() && my._view.getPassphrase() ) {
-          var owner_hash = hash(my._view.getUsername());
-          var access_hash = hash(my._view.getPassphrase());
+          my.owner_hash = hash(my._view.getUsername());
+          my.access_hash = hash(my._view.getPassphrase());
           var url = '/api/dossier/load.json';
               url += '?token=' + my.token;
-              url += '&owner_hash=' + owner_hash;
-              url += '&access_hash=' + access_hash;
+              url += '&owner_hash=' + my.owner_hash;
+              url += '&access_hash=' + my.access_hash;
           var getJSON = $.getJSON(url, function(data) {
             $(data).each(function(index, value) {
               my._view.setContent(decrypt(value.content, my._view.getPassphrase()));
@@ -339,12 +339,10 @@ var application = function() {
     saveDossier: function(callbackOnSuccess, callbackOnError) {
       var my = this;
       if ( my._view.getUsername() && my._view.getPassphrase() ) {
-        var owner_hash = hash(my._view.getUsername());
-        var access_hash = hash(my._view.getPassphrase());
         var content = encrypt(my._view.getContent(), my._view.getPassphrase());
         var url = '/api/dossier/save.json';
             url += '?token=' + my.token;
-        var post_params = { 'owner_hash': owner_hash, 'access_hash': access_hash, content: content };
+        var post_params = { 'owner_hash': my.owner_hash, 'access_hash': my.access_hash, content: content };
         var post = $.post(url, post_params);
              
         post.success(function() {

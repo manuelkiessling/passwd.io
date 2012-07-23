@@ -3,7 +3,7 @@ html {
 }
 
 .ui-content {
-  padding-top: 4px;
+  margin-top: -8px;
 }
 
 #captcha-image {
@@ -18,22 +18,23 @@ html {
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, .2);
 }
 
-.ui-btn > #help-button {
-  opacity: 0.5;
-}
-
 #info {
   text-align: center;
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
 }
 
+#howitworks {
+  text-align: right;
+}
+
 #howitworks a {
-  color: #999;
-  font-size: 9pt;
-  margin-top: 20px;
+  color: #666;
+  font-size: 8pt;
+  font-weight: normal;
+  margin-top: 30px;
 }
 #logo {
-  margin-top: 60px;
+  margin-top: 160px;
   font-weight: bold;
   color: #194B7E;
 }
