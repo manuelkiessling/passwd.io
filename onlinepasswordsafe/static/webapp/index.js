@@ -3,7 +3,7 @@ var application = function() {
   var authformView = {
     init: function() {
       $('#load-button').click(function() {
-//$.mobile.changePage( "#two", { transition: "slideup"} );
+        authformController.loadDossier();
       });
     },
     getVerificationCode: function() {
@@ -12,8 +12,11 @@ var application = function() {
     getUsername: function() {
       return $('#username').val();
     },
-    getPassword: function() {
-      return $('#password').val();
+    getPassphrase: function() {
+      return $('#passphrase').val();
+    },
+    setContent: function(value) {
+      $('#dossier-content').val(value);
     },
     setCaptchaUrl: function(url) {
       $('#captcha-image').attr('src', url);
@@ -23,21 +26,79 @@ var application = function() {
   var authformController = {
     _view: authformView,
     token: null,
+    tokenIsVerified: false,
+    username: null,
+    passphrase: null,
     getToken: function() {
-      var me = this;
+      var my = this;
       var url = '/getToken.json';
       var getJSON = $.getJSON(url, function(data) {
         $(data).each(function(index, value) {
-          me.token = value.token;
+          my.token = value.token;
         })
       });
       getJSON.success(function() {
-        me.loadCaptcha();
+        my.loadCaptcha();
       });
     },
     loadCaptcha: function() {
       this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token);
     },
+    verifyToken: function(callback) {
+      var my = this;
+      var post_params = { token: my.token, 'verification_code': my._view.getVerificationCode() };
+      var url = '/activateToken.json'
+      var post = $.post(url, post_params);
+      post.success(function() {
+        my.tokenIsVerified = true;
+        callback();
+      });
+    },
+    loadDossier: function() {
+      var my = this;
+      var load = function() {
+        if ( my._view.getUsername() && my._view.getPassphrase() ) {
+          var owner_hash = hash(my._view.getUsername());
+          var access_hash = hash(my._view.getPassphrase());
+          var url = '/api/dossier/load.json';
+              url += '?token=' + my.token;
+              url += '&owner_hash=' + owner_hash;
+              url += '&access_hash=' + access_hash;
+          var getJSON = $.getJSON(url, function(data) {
+            $(data).each(function(index, value) {
+              my._view.setContent(decrypt(value.content, my._view.getPassphrase()));
+            });
+          });
+  
+          getJSON.success(function() {
+            window.location.href = '#two';
+          });
+  
+          getJSON.error(function() {
+            window.alert('error');
+          });
+        } else {
+          window.alert('need username and passphrase');
+        }
+      };
+      if (my.tokenIsVerified) {
+        load();
+      } else {
+        my.verifyToken(load);
+      }
+    },
+  };
+
+  var hash = function(input) {
+    return sjcl.misc.pbkdf2(input, '', 10000).toString();
+  };
+  
+  var encrypt = function(text, passphrase) {
+    return sjcl.json.encrypt(passphrase, text);
+  };
+
+  var decrypt = function(encrypted, passphrase) {
+    return sjcl.json.decrypt(passphrase, encrypted);
   };
 
   $('document').ready(function() {

@@ -11,7 +11,7 @@
     <script src="jquery.mobile-1.1.1.min.js"></script>
     <script type="text/javascript" src="vendor/jquery.min.js"></script>
     <script type="text/javascript" src="vendor/sjcl.js"></script>
-    <script src="index.js"></script>
+    <script src="index.js?djeijde"></script>
   </head>
 
   <body>
@@ -22,14 +22,12 @@
         
         <div class="ui-grid-a">
           <div class="ui-block-a"><img id="captcha-image" width="90%" height="26" src=""></div>
-          <div class="ui-block-b"><input type="text" id="verificationCode" value="" placeholder="Image code"></div>
+          <div class="ui-block-b"><input type="text" id="verificationcode" value="" placeholder="Image code"></div>
         </div>
                 
-        <form action="#two">
         <input type="text" id="username" value="" placeholder="Username">
-        <input type="text" id="username" value="" placeholder="Password">
-        <button id="load-button" type="submit">Load or Create</button>
-      </form>
+        <input type="text" id="passphrase" value="" placeholder="Passphrase">
+        <a href="" id="load-button" type="submit">Load or Create</a>
 
         <div class="ui-grid-b">
           <div class="ui-block-a"></div>
