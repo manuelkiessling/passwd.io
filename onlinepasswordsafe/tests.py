@@ -225,7 +225,7 @@ class FunctionalTests(unittest.TestCase):
         post_params = {'owner_hash': '1111111111111111', 'access_hash': '2222222222222222', 'content': 'fdjs9884jhf98'}
         self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111&access_hash=2222222222222222', status=200) 
-        self.assertTrue(b'fdjs9884jhf98' in res.body)
+        self.assertTrue(res.body == '{"content": "fdjs9884jhf98"}')
 
     def test_load_wrongaccesshash(self):
         t = getToken()

@@ -41,9 +41,7 @@ def load(request):
             return {'status': 'Bad request'}
     dossier = walletService.retrieveDossier(request.params['owner_hash'], request.params['access_hash'])
     if dossier:
-        return { 'owner_hash': dossier.owner_hash,
-                 'access_hash': dossier.access_hash,
-                 'content': dossier.content }
+        return { 'content': dossier.content }
     else:
         request.response.status_int = 500
         return {'status': 'error'}
