@@ -59,7 +59,7 @@ def changeAccessHash(request):
         success = False
     return {'success': success}
 
-@view_config(route_name='getToken.json', renderer='json', xhr=False)
+@view_config(route_name='/api/token/get', renderer='json', xhr=False)
 def getToken(request):
     tokenService = TokenService()
     token = tokenService.getToken()
@@ -69,7 +69,7 @@ def getToken(request):
         request.response.status_int = 500
         return False
 
-@view_config(route_name='activateToken.json', renderer='json', xhr=False)
+@view_config(route_name='/api/token/activate', renderer='json', xhr=False)
 def activateToken(request):
     tokenService = TokenService()
     token = request.params['token']

@@ -11,7 +11,7 @@
     <script src="jquery.mobile-1.1.1.min.js"></script>
     <script type="text/javascript" src="vendor/jquery.min.js"></script>
     <script type="text/javascript" src="vendor/sjcl.js"></script>
-    <script src="index.js?djeijde"></script>
+    <script src="index.js"></script>
   </head>
 
   <body>
@@ -25,21 +25,16 @@
           <div class="ui-block-b"><input type="text" id="verificationcode" value="" placeholder="Image code"></div>
         </div>
                 
-        <input type="text" id="username" value="" placeholder="Username">
+        <input type="text" id="username" value="" placeholder="Your mail address">
         <input type="text" id="passphrase" value="" placeholder="Passphrase">
-        <a href="" id="load-button" type="submit">Load or Create</a>
-
-        <div class="ui-grid-b">
-          <div class="ui-block-a"></div>
-          <div id="help-area" class="ui-block-b">
-            <button id="help-button" data-theme="c">Help</button>
-          </div>
-          <div class="ui-block-c"></div>
-        </div>
+        <a href="" id="load-button" type="submit">Load (or create new)</a>
 
         <div class="ui-grid-b">
           <div class="ui-block-a"></div>
           <div id="info" class="ui-block-b">
+            <div id="howitworks">
+              <a href="howItWorks.html" target="_blank">How it works</a>
+            </div>
             <div id="logo">passwd.io</div>
             <div id="logo-subtext">it's your data</div>
           </div>
@@ -52,10 +47,8 @@
     <div data-role="page" id="two" data-theme="b">
 
       <div data-role="content">
-        <form action="" method="">
-          <button type="submit">Encrypt and Save</button>
-          <textarea name="textarea" id="dossier-content" placeholder="Put your confidential data here."></textarea>
-        </form>   
+        <a href="" id="save-button" type="submit">Encrypt and save</a>
+        <textarea name="dossier-content" id="dossier-content" placeholder="Put your confidential data here."></textarea>
       </div>
     </div>
 

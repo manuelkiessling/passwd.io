@@ -5,6 +5,9 @@ var application = function() {
       $('#load-button').click(function() {
         authformController.loadDossier();
       });
+      $('#save-button').click(function() {
+        authformController.saveDossier();
+      });
     },
     getVerificationCode: function() {
       return $('#verificationcode').val();
@@ -14,6 +17,9 @@ var application = function() {
     },
     getPassphrase: function() {
       return $('#passphrase').val();
+    },
+    getContent: function() {
+      return $('#dossier-content').val();
     },
     setContent: function(value) {
       $('#dossier-content').val(value);
@@ -31,7 +37,7 @@ var application = function() {
     passphrase: null,
     getToken: function() {
       var my = this;
-      var url = '/getToken.json';
+      var url = '/api/token/get.json';
       var getJSON = $.getJSON(url, function(data) {
         $(data).each(function(index, value) {
           my.token = value.token;
@@ -44,14 +50,17 @@ var application = function() {
     loadCaptcha: function() {
       this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token);
     },
-    verifyToken: function(callback) {
+    activateToken: function(callback) {
       var my = this;
       var post_params = { token: my.token, 'verification_code': my._view.getVerificationCode() };
-      var url = '/activateToken.json'
+      var url = '/api/token/activate.json'
       var post = $.post(url, post_params);
       post.success(function() {
         my.tokenIsVerified = true;
         callback();
+      });
+      post.error(function() {
+        window.alert('The image code is not correct.');
       });
     },
     loadDossier: function() {
@@ -75,18 +84,54 @@ var application = function() {
           });
   
           getJSON.error(function() {
-            window.alert('error');
+            my.saveDossier(
+              function() {
+                window.location.href = '#two';
+              },
+              function() {
+                window.alert('Could neither load nor create - please try different credentials.');
+              }
+            );
+            //window.alert('An error occured while trying to read from the server.');
           });
         } else {
-          window.alert('need username and passphrase');
+          window.alert('Please provide an eMail address and a passphrase.');
         }
       };
       if (my.tokenIsVerified) {
         load();
       } else {
-        my.verifyToken(load);
+        my.activateToken(load);
       }
     },
+    saveDossier: function(callbackOnSuccess, callbackOnError) {
+      var my = this;
+      if ( my._view.getUsername() && my._view.getPassphrase() ) {
+        var owner_hash = hash(my._view.getUsername());
+        var access_hash = hash(my._view.getPassphrase());
+        var content = encrypt(my._view.getContent(), my._view.getPassphrase());
+        var url = '/api/dossier/save.json';
+            url += '?token=' + my.token;
+        var post_params = { 'owner_hash': owner_hash, 'access_hash': access_hash, content: content };
+        var post = $.post(url, post_params);
+             
+        post.success(function() {
+          if (callbackOnSuccess !== undefined) {
+            callbackOnSuccess();
+          }
+        });
+            
+        post.error(function(error) {
+          if (callbackOnError !== undefined) {
+            callbackOnError();
+          } else {
+            window.alert('An error occured while trying to write to the server.');
+          }
+        });
+      } else {
+        window.alert('Please provide an eMail address and a passphrase.');
+      }
+    }
   };
 
   var hash = function(input) {

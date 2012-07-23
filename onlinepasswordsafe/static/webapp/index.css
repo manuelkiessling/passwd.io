@@ -23,12 +23,17 @@ html {
 }
 
 #info {
-  margin-top: 100px;
   text-align: center;
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
 }
 
+#howitworks a {
+  color: #999;
+  font-size: 9pt;
+  margin-top: 20px;
+}
 #logo {
+  margin-top: 60px;
   font-weight: bold;
   color: #194B7E;
 }
