@@ -2,6 +2,25 @@ import uuid, sha
 from .domain import Dossier, DossierRepository
 from .models import DBSession, Token
 
+class ThrottleService(object):
+    def __init__(self, item, max_events, max_events_per_second, expires=86400):
+        self.identifier = sha.new(item + str(max_events) + str(max_events_per_second) + str(expires)).hexdigest()
+        tw = DBSession.query(ThrottleWatch).filter(ThrottleWatch.identifier==self.identifier).first()
+        if not tw:
+          tw = ThrottleWatch()
+          tw.identifier = self.identifier
+          tw.max_events = max_events
+          tw.max_events_per_second = max_events_per_second
+          tw.expires = expires
+          DBSession.merge(tw)
+
+    def addEvent(self):
+        pass
+#        te = ThrottleEvent()
+#        te.identifier = self.identifier
+#        te.
+
+
 class TokenService(object):
     def getVerificationCode(self, token):
         tokenData = DBSession.query(Token).filter(Token.token==token).first()
