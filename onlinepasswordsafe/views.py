@@ -61,6 +61,7 @@ def changeAccessHash(request):
 
 @view_config(route_name='/api/token/get', renderer='json', xhr=False)
 def getToken(request):
+    request.response.cache_expires(seconds=0)
     tokenService = TokenService()
     token = tokenService.getToken()
     if token:
