@@ -118,6 +118,8 @@ var application = function() {
         post.success(function() {
           if (callbackOnSuccess !== undefined) {
             callbackOnSuccess();
+          } else {
+            window.alert('Successfully stored your confidential data');
           }
         });
             
