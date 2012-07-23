@@ -135,7 +135,7 @@ var application = function() {
   };
 
   var hash = function(input) {
-    return sjcl.misc.pbkdf2(input, '', 10000).toString();
+    return sjcl.codec.hex.fromBits(sjcl.misc.pbkdf2(input, '', 10000));
   };
   
   var encrypt = function(text, passphrase) {
