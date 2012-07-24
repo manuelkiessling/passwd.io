@@ -299,8 +299,8 @@ var application = function() {
       var my = this;
       var load = function() {
         if ( my._view.getUsername() && my._view.getPassphrase() ) {
-          my.owner_hash = hash(my._view.getUsername());
-          my.access_hash = hash(my._view.getPassphrase());
+          my.owner_hash = hash(my._view.getUsername(), '');
+          my.access_hash = hash(my._view.getPassphrase(), my._view.getUsername());
           var url = '/api/dossier/load.json';
               url += '?token=' + my.token;
               url += '&owner_hash=' + my.owner_hash;
@@ -366,8 +366,8 @@ var application = function() {
     }
   };
 
-  var hash = function(input) {
-    return sjcl.codec.hex.fromBits(sjcl.misc.pbkdf2(input, '', 10000));
+  var hash = function(input, salt) {
+    return sjcl.codec.hex.fromBits(sjcl.misc.pbkdf2(input, sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(salt)), 10000));
   };
   
   var encrypt = function(text, passphrase) {
