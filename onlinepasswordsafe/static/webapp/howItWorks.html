@@ -4,13 +4,25 @@
     <title>passwd.io - How it works</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="index.css">
+    <style>
+      #info, #logo {
+       margin-top: 0; 
+      }
+      h2, h3 {
+        text-align: center;
+      }
+    </style>
     <script type="text/javascript" src="index.js" defer="defer" async="async"></script>
   </head>
 
   <body>
 
     <div data-role="content">
-      <h1>passwd.io</h1>
+      <div id="info">
+        <div id="logo">passwd.io</div>
+        <div id="logo-subtext">it's your data</div>
+      </div>
+
       <h2>How it works</h2>
       <p>
         passwd.io does only one thing, but it tries to do it well.
@@ -23,6 +35,8 @@
         wherever you are, without any setup steps - as long as you have
         internet access, you will be able to securely access your data.
       </p>
+
+      <h3>You own your data</h3>
       <p>
         The important thing is that your data is yours, and yours only.
         The information transmitted to the passwd.io servers is already
@@ -46,6 +60,8 @@
         The cleartext passphrase is then used to encrypt your confidential
         data on the client - thus, only encrypted data is transferred.
       </p>
+
+      <h3>We don't know any of you confidential data</h3>
       <p>
         Thus, the passwd.io server knows your hashed mail adress, your hashed
         passphrase, and your encrypted data. This way, we are completely unable
@@ -57,6 +73,8 @@
         and are used to find your encrypted data - which is then sent to your browser
         where it is decrypted locally by using your cleartext passphrase.
       </p>
+
+      <h3>Account recovery is safe and simple</h3>
       <p>
         Because no registration is needed, it's possible for someone else to use your
         mail adress for storing data. However, this is not dangerous, because none of
@@ -76,14 +94,88 @@
         data stored for your mail address. You are then able to create a new account
         with your mail address.
       </p>
+
+      <h3>So, how secure is it, really?</h3>
       <p>
         What could possibly go wrong? Here is a list:
         <ul>
           <li>
-            Someone is eavesdropping your connection, reading the information you sent
-            to and receive from the server.
-            <br>
-            <strong>
+            <p>
+              Someone is eavesdropping your connection, reading the information you sent
+              to and receive from the server.
+            </p>
+            <p>
+              <b>This isn't dangerous</b>, because only hashed and encrypted data is sent
+              over the wire, making it extremely hard to break for the attacker. As long
+              as you chose a strong passphrase, your data is secure.
+            </p>
+            <p>
+              Nevertheless, passwd.io runs over a secure SSL connection, which makes eavesdropping
+              very difficult.
+            </p>
+          </li>
+          <li>
+            <p>
+              Someone breaks into the passwd.io servers and steals all data and code.
+            </p>
+            <p>
+              <b>This isn't dangerous</b>, because again, the attacker only gains access
+              to encrypted and hashed data. He does not gain access to your mail address or
+              passphrase, and, as long as you chose a strong passphrase, won't be able to
+              decrypt your confidential data.
+            </p>
+            <p>
+              Nevertheless, we take a lot of precautions to make sure that our servers are
+              protected against unauthorized access.
+            </p>
+          </li>
+        </ul>
+        Here is a list of stuff we do to make passwd.io secure:
+        <ul>
+          <li>
+            <p>
+              <b>No external JavaScript</b>
+            </p>
+            <p>
+              The passwd.io client code never loads any remote JavaScript files like e.g. Google Analytics
+              or ad tags, to prevent injection of harmful code into the page.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>
+                HTTPS only
+              </b>
+            </p>
+            <p>
+              Even if you want to, you can't use passwd.io over a non-encrypted connection - usage of a
+              SSL/TLS encrypted HTTPS connection is enforced.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>
+                Secure passphrases only
+              </b>
+            </p>
+            <p>
+              The weakest point in passwd.io security is the passphrase you choose.
+              We therefore enforce using strong passphrases (sorry!), i.e., strings which are at least 
+              24 characters long. While this might sound like impossible to memorize, it is
+              in fact very simple - <a href="http://xkcd.com/936/">read more about that here</a>.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>
+                Publicly available code
+              </b>
+            </p>
+            <p>
+              The client code of passwd.io, where hashing and encryption take place, is publicly available under
+              a standardized open source license. Anyone, including you, can peer review the code for potential
+              security weaknesses.
+            </p>
           </li>
         </ul>
       </p>
