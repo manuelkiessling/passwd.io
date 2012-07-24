@@ -2,6 +2,10 @@ html {
   background-color: #ccc;
 }
 
+.ui-page {
+  max-width: 480px;
+}
+
 .ui-content {
   margin-top: -8px;
 }
