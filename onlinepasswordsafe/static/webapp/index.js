@@ -379,6 +379,7 @@ var application = function() {
   };
 
   $('document').ready(function() {
+    $('body').fadeIn();
     authformView.init();
     authformController.getToken();
   });
