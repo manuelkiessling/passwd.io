@@ -111,6 +111,9 @@ def activateToken(request):
 
 @view_config(route_name='getCaptcha.png')
 def getCaptcha(request):
+    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', request.params['token'])):
+        request.response.status_int = 400
+        return Response(body='parameter syntax error', content_type='text/plain', status='400')
     tokenService = TokenService()
     try:
         verificationCode = tokenService.getVerificationCode(request.params['token'])

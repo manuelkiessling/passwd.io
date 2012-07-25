@@ -314,11 +314,6 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.post('/api/token/activate.json', post_params, status=400)
         self.assertTrue(b'parameter syntax error' in res.body)
 
-    def test_get_captcha(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        res = self.testapp.get('/getCaptcha.png?token=' + token, status=200)
-
     def test_subsequent_failed_activation_updates_verification_code(self):
         res = self.testapp.get('/api/token/get.json', status=200)
         token = res.json['token']
@@ -328,8 +323,17 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.post('/api/token/activate.json', post_params, status=400)
         self.assertTrue(verificationCode != ts.getVerificationCode(token))
 
-    def test_get_captcha_fails(self):
-        res = self.testapp.get('/getCaptcha.png?token=invalid', status=400)
+    def test_get_captcha(self):
+        res = self.testapp.get('/api/token/get.json', status=200)
+        token = res.json['token']
+        res = self.testapp.get('/getCaptcha.png?token=' + token, status=200)
+
+    def test_get_captcha_fails_with_wrong_token(self):
+        res = self.testapp.get('/getCaptcha.png?token=1111111111111111111111111111111111111111', status=400)
+
+    def test_get_captcha_fails_with_syntactically_invalid_token(self):
+        res = self.testapp.get('/getCaptcha.png?token=x111111111111111111111111111111111111111', status=400)
+        self.assertTrue(b'parameter syntax error' in res.body)
 
     def test_api_calls_fail_with_wrong_token(self):
         t = getToken()
