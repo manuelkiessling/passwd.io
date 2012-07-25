@@ -182,6 +182,17 @@ class TokenServiceUnittests(unittest.TestCase):
         token = ts.getToken()
         self.assertFalse(ts.bound(token, 'foo'))
 
+    def test_cant_bind_twice(self):
+        ts = TokenService()
+        token = ts.getToken()
+        ts.bind(token, 'foo')
+        thrown = False
+        try:
+            ts.bind(token, 'bar')
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+
     def test_update_verification_code(self):
         ts = TokenService()
         token = ts.getToken()

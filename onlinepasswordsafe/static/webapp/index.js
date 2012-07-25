@@ -285,7 +285,10 @@ var application = function() {
     },
     activateToken: function(callback) {
       var my = this;
-      var post_params = { token: my.token, 'verification_code': my._view.getVerificationCode() };
+      var post_params = { token: my.token,
+                          'verification_code': my._view.getVerificationCode(),
+                          'bind_to': hash(my._view.getUsername(), '')
+                        };
       var url = '/api/token/activate.json'
       var post = $.post(url, post_params);
       post.success(function() {

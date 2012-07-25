@@ -41,6 +41,8 @@ class TokenService(object):
 
     def bind(self, token, bindTo):
         tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        if tokenData.bound_to != '':
+            raise Exception('can\'t bind twice')
         token = Token()
         token.token = tokenData.token
         token.verification_code = tokenData.verification_code
