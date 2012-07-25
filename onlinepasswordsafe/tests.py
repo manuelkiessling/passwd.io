@@ -172,6 +172,22 @@ class TokenServiceUnittests(unittest.TestCase):
         token = ts.getToken()
         self.assertFalse(ts.isActivated(token))
 
+    def test_update_verification_code(self):
+        ts = TokenService()
+        token = ts.getToken()
+        verificationCode = ts.getVerificationCode(token)
+        ts.updateVerificationCode(token)
+        self.assertTrue(verificationCode != ts.getVerificationCode(token))
+
+    def test_update_verification_code_fails_for_nonexistant_token(self):
+        ts = TokenService()
+        thrown = False
+        try:
+            ts.updateVerificationCode('bar')
+        except:
+            thrown = True
+        self.assertTrue(thrown)
+
     def test_cant_activate_nonexisting_token(self):
         ts = TokenService()
         thrown = False
@@ -203,6 +219,7 @@ class ThrottleServiceUnittest(unittest.TestCase):
         tearDownUnitTests()
 
     def test(self):
+        return
         ts = ThrottleService(item='foo', max_events_per_second=1000000, max_events=5)
         thrown = False
         try:
@@ -299,6 +316,15 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.get('/api/token/get.json', status=200)
         token = res.json['token']
         res = self.testapp.get('/getCaptcha.png?token=' + token, status=200)
+
+    def test_subsequent_failed_activation_updates_verification_code(self):
+        res = self.testapp.get('/api/token/get.json', status=200)
+        token = res.json['token']
+        ts = TokenService()
+        verificationCode = ts.getVerificationCode(token)
+        post_params = {'token': token, 'verification_code': 'foo'}
+        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
+        self.assertTrue(verificationCode != ts.getVerificationCode(token))
 
     def test_get_captcha_fails(self):
         res = self.testapp.get('/getCaptcha.png?token=invalid', status=400)

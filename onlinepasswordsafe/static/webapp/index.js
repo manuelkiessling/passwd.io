@@ -280,7 +280,7 @@ var application = function() {
       });
     },
     loadCaptcha: function() {
-      this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token);
+      this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token + '&' + Math.random());
     },
     activateToken: function(callback) {
       var my = this;
@@ -292,6 +292,7 @@ var application = function() {
         callback();
       });
       post.error(function() {
+        my.loadCaptcha();
         window.alert('The image code is not correct.');
       });
     },

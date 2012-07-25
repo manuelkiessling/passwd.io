@@ -23,8 +23,14 @@ class ThrottleService(object):
 
 class TokenService(object):
     def getVerificationCode(self, token):
-        tokenData = DBSession.query(Token).filter(Token.token==token).first()
-        return tokenData.verification_code
+        tokenModel = DBSession.query(Token).filter(Token.token==token).first()
+        return tokenModel.verification_code
+
+    def updateVerificationCode(self, token):
+        tokenModel = DBSession.query(Token).filter(Token.token==token).first()
+        tokenModel.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:6]
+        DBSession.merge(tokenModel)
+        return True
 
     def getToken(self):
         token = Token()

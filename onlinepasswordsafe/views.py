@@ -87,6 +87,7 @@ def activateToken(request):
             request.response.status_int = 400
             return {'success': False}
     else:
+        tokenService.updateVerificationCode(token)
         request.response.status_int = 400
         return {'success': False}
 

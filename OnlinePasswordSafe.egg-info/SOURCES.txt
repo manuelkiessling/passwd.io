@@ -38,6 +38,7 @@ onlinepasswordsafe/static/pylons.css
 onlinepasswordsafe/static/pyramid-small.png
 onlinepasswordsafe/static/pyramid.png
 onlinepasswordsafe/static/transparent.gif
+onlinepasswordsafe/static/webapp/howItWorks.html
 onlinepasswordsafe/static/webapp/index.css
 onlinepasswordsafe/static/webapp/index.html
 onlinepasswordsafe/static/webapp/index.js
@@ -47,6 +48,7 @@ onlinepasswordsafe/static/webapp/images/icons-18-black.png
 onlinepasswordsafe/static/webapp/images/icons-18-white.png
 onlinepasswordsafe/static/webapp/images/icons-36-black.png
 onlinepasswordsafe/static/webapp/images/icons-36-white.png
+onlinepasswordsafe/static/webapp/images/tile-grey.png
 onlinepasswordsafe/static/webapp/vendor/jquery-1.7.1.min.js
 onlinepasswordsafe/static/webapp/vendor/jquery.mobile-1.1.1.min.css
 onlinepasswordsafe/static/webapp/vendor/jquery.mobile-1.1.1.min.js
