@@ -20,7 +20,7 @@ def main(global_config, **settings):
 
     config.add_route('/api/sessiontokens', '/api/sessiontokens')
     config.add_route('/api/sessiontokens/:sessiontoken/captcha', '/api/sessiontokens/{sessiontoken}/captcha')
-
+    config.add_route('/api/dossiers/:id', '/api/dossiers/{id}')
 
     config.scan()
     return config.make_wsgi_app()

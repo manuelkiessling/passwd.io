@@ -129,6 +129,7 @@ def getCaptcha(request):
         return Response(body='error', content_type='text/plain', status='400')
 
 
+# New API
 
 @view_config(route_name='/api/sessiontokens', renderer='json', xhr=False)
 def createSessiontoken(request):
@@ -159,6 +160,24 @@ def getSessiontokenCaptcha(request):
     except:
         return Response(body='error', content_type='text/plain', status='400')
 
+@view_config(route_name='/api/dossiers/:id', renderer='json', xhr=False)
+def updateDossier(request):
+    fr = FakeRequest()
+    fr.params = {'token': request.headers['x-passwdio-sessiontoken']}
+    if isInvalidToken(fr):
+        return respondWithAccessError(request)
+    walletService = WalletService()
+    try:
+        success = walletService.fileDossier(request.matchdict['id'], request.headers['x-passwdio-dossiertoken'], request.params['content'])
+    except ValueError:
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
+    if not success:
+        request.response.status_int = 500
+    return {'success': success}
+
+class FakeRequest(object):
+    pass
 
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem

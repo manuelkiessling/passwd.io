@@ -251,18 +251,16 @@ class FunctionalTests(unittest.TestCase):
         from onlinepasswordsafe.models import DBSession
         DBSession.remove()
 
-    def test_save(self):
+    def test_save_and_load(self):
         t = getToken()
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        res = self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
-        self.assertTrue(res.json['success'])
-
-    def test_load(self):
-        t = getToken()
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
+        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'foo'}
         self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
-        self.assertTrue(res.body == '{"content": "fdjs9884jhf98"}')
+        self.assertTrue(res.body == '{"content": "foo"}')
+        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'bar'}
+        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
+        res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
+        self.assertTrue(res.body == '{"content": "bar"}')
 
     def test_load_wrongaccesshash(self):
         t = getToken()
@@ -385,6 +383,9 @@ class FunctionalTests(unittest.TestCase):
             res = self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
 
+
+    # New API
+
     def test_api_create_sessiontoken(self):
         res = self.testapp.post('/api/sessiontokens',
                                 headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
@@ -401,6 +402,14 @@ class FunctionalTests(unittest.TestCase):
                                headers={'Accept': 'image/png'},
                                status=200)
         self.assertTrue('image/png' == res.headers['Content-Type'])
+
+    def test_update_dossier_content(self):
+        post_params = {'content': 'fdjs9884jhf98'}
+        res = self.testapp.post('/api/dossiers/1111111111111111111111111111111111111111111111111111111111111111',
+                                post_params,
+                                headers=apiHeaders(getToken(), '2222222222222222222222222222222222222222222222222222222222222222'),
+                                status=200)
+        self.assertTrue(res.json['success'])
 
 def apiHeaders(sessiontoken, dossiertoken):
     return {'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1',
