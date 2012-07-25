@@ -4,11 +4,15 @@ upstream passwd.io.backend {
 
 server {
 #  server_name passwd.io
+  keepalive_timeout 70;
+
   listen 443 ssl;
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   add_header Strict-Transport-Security "max-age=315360000; includeSubdomains";
-  ssl_certificate /home/manuel/OnlinePasswordSafe-env/OnlinePasswordSafe/deployment/ssl/www.passwd.io.crt;
+  ssl_certificate /home/manuel/OnlinePasswordSafe-env/OnlinePasswordSafe/deployment/ssl/www.passwd.io.chained.crt;
   ssl_certificate_key /home/manuel/OnlinePasswordSafe-env/OnlinePasswordSafe/deployment/ssl/passwd.io.csr.key;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
 
 	gzip on;
 	gzip_disable "msie6";
