@@ -1,3 +1,4 @@
+import json
 import re
 import unittest
 import transaction
@@ -384,18 +385,31 @@ class FunctionalTests(unittest.TestCase):
             res = self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
 
-    def test_api_sessiontoken(self):
+    def test_api_create_sessiontoken(self):
         res = self.testapp.post('/api/sessiontokens',
                                 headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
                                 status=200)
         self.assertTrue(bool(re.findall(r'^\{"sessiontoken"\: "([a-f0-9]{40})"\}$', res.body)))
-        self.assertTrue('application/vnd.passwd.io+json; version=1.0.0-beta.1' == res.headers['Content-Type'])
+        self.assertTrue(apiContentType() == res.headers['Content-Type'])
+
+    def test_api_get_sessiontoken_captcha(self):
+        res = self.testapp.post('/api/sessiontokens',
+                                headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
+                                status=200)
+        sessiontoken = json.loads(res.body)['sessiontoken']
+        res = self.testapp.get('/api/sessiontokens/' + sessiontoken + '/captcha',
+                               headers={'Accept': 'image/png'},
+                               status=200)
+        self.assertTrue('image/png' == res.headers['Content-Type'])
 
 def apiHeaders(sessiontoken, dossiertoken):
     return {'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1',
             'x-passwdio-sessiontoken': sessiontoken,
             'x-passwdio-dossiertoken': dossiertoken
            }
+
+def apiContentType():
+    return 'application/vnd.passwd.io+json; version=1.0.0-beta.1'
 
 def getToken():
     ts = TokenService()

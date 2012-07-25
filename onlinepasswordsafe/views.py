@@ -131,7 +131,7 @@ def getCaptcha(request):
 
 
 @view_config(route_name='/api/sessiontokens', renderer='json', xhr=False)
-def createSessionToken(request):
+def createSessiontoken(request):
     request.response.content_type = 'application/vnd.passwd.io+json; version=1.0.0-beta.1'
     tokenService = TokenService()
     token = tokenService.getToken()
@@ -140,8 +140,24 @@ def createSessionToken(request):
     else:
         request.response.status_int = 500
         return False
-    
 
+@view_config(route_name='/api/sessiontokens/:sessiontoken/captcha')
+def getSessiontokenCaptcha(request):
+    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', request.matchdict['sessiontoken'])):
+        return Response(body='parameter syntax error', content_type='text/plain', status_int=400)
+    tokenService = TokenService()
+    try:
+        verificationCode = tokenService.getVerificationCode(request.matchdict['sessiontoken'])
+        from skimpyGimpy import skimpyAPI
+        import os
+        imageData = skimpyAPI.Png(verificationCode,
+                                  color='bbbbbb',
+                                  fontpath=os.getcwd() + '/fonts/10x20.bdf',
+                                  speckle=1.8,
+                                  scale=2.0).data()
+        return Response(body=imageData, content_type='image/png')
+    except:
+        return Response(body='error', content_type='text/plain', status='400')
 
 
 conn_err_msg = """\
