@@ -47,7 +47,7 @@
         <p>
           This works because the passwd.io servers are just a "dumb" data
           store - encryption happens on the client, in your web browser.
-          For this, passwd.io uses AES encryption and pbkdf2 hashing,
+          For this, passwd.io uses AES encryption and PBKDF2 hashing,
           two very secure crypto algorithms.
         </p>
         <p>
@@ -111,7 +111,7 @@
                 as you chose a strong passphrase, your data is secure.
               </p>
               <p>
-                Nevertheless, passwd.io runs over a secure SSL connection, which makes eavesdropping
+                Nevertheless, passwd.io runs over an encrypted TLS connection, which makes eavesdropping
                 very difficult.
               </p>
             </li>
@@ -138,8 +138,8 @@
                 <b>No external JavaScript</b>
               </p>
               <p>
-                The passwd.io client code never loads any remote JavaScript files like e.g. Google Analytics
-                or ad tags, to prevent injection of harmful code into the page.
+                The passwd.io client code never loads any remote JavaScript files like e.g. Google Analytics,
+                ad tags, or Facebook Like buttons, to prevent injection of harmful code into the page.
               </p>
             </li>
             <li>
@@ -150,7 +150,7 @@
               </p>
               <p>
                 Even if you want to, you can't use passwd.io over a non-encrypted connection - usage of a
-                SSL/TLS encrypted HTTPS connection is enforced.
+                TLS encrypted HTTPS connection is enforced.
               </p>
             </li>
             <li>
@@ -161,7 +161,7 @@
               </p>
               <p>
                 The weakest point in passwd.io security is the passphrase you choose.
-                We therefore enforce using strong passphrases (sorry!), i.e., strings which are at least 
+                We therefore strongly recommend using strong passphrases, i.e., strings which are at least 
                 24 characters long. While this might sound like impossible to memorize, it is
                 in fact very simple - <a href="http://xkcd.com/936/">read more about that here</a>.
               </p>
