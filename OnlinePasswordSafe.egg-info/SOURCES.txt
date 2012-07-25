@@ -20,6 +20,7 @@ migrations/versions/003_Files_table_id_to_36byte_uuid_string.py
 migrations/versions/004_files_making_owner_hash_unique_again.py
 migrations/versions/005_files_owner_hash_unique_second_try.py
 migrations/versions/006_add_tokens_table.py
+migrations/versions/007_tokens_add_bound_to.py
 migrations/versions/__init__.py
 onlinepasswordsafe/__init__.py
 onlinepasswordsafe/application.py
@@ -38,6 +39,7 @@ onlinepasswordsafe/static/pylons.css
 onlinepasswordsafe/static/pyramid-small.png
 onlinepasswordsafe/static/pyramid.png
 onlinepasswordsafe/static/transparent.gif
+onlinepasswordsafe/static/webapp/api.html
 onlinepasswordsafe/static/webapp/howItWorks.html
 onlinepasswordsafe/static/webapp/index.css
 onlinepasswordsafe/static/webapp/index.html

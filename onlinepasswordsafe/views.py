@@ -9,7 +9,7 @@ from .application import WalletService, TokenService
 def isInvalidToken(request):
     ts = TokenService()
     try:
-        return not ts.isActivated(request.params['token'])
+        return not (ts.isActivated(request.params['token']) and ts.bound(request.params['token'], request.params['owner_hash']))
     except:
         return True
 
@@ -85,20 +85,29 @@ def getToken(request):
 def activateToken(request):
     token = request.params['token']
     tokenService = TokenService()
-    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', token)):
-        request.response.status_int = 400
-        return {'success': False, 'error': 'parameter syntax error'}
-    if not bool(re.findall(r'^([a-fA-F0-9]{6})$', request.params['verification_code'])):
-        tokenService.updateVerificationCode(token)
-        request.response.status_int = 400
-        return {'success': False, 'error': 'parameter syntax error'}
+    try:
+      if not bool(re.findall(r'^([a-f0-9]{40})$', token)):
+          request.response.status_int = 400
+          return {'success': False, 'error': 'parameter syntax error'}
+      if not bool(re.findall(r'^([a-fA-F0-9]{6})$', request.params['verification_code'])):
+          tokenService.updateVerificationCode(token)
+          request.response.status_int = 400
+          return {'success': False, 'error': 'parameter syntax error'}
+      if not bool(re.findall(r'^([a-f0-9]{64})$', request.params['bind_to'])):
+          tokenService.updateVerificationCode(token)
+          request.response.status_int = 400
+          return {'success': False, 'error': 'parameter syntax error'}
+    except:
+          request.response.status_int = 400
+          return {'success': False, 'error': 'parameter syntax error'}
     try:
         verificationCode = tokenService.getVerificationCode(token)
     except:
         request.response.status_int = 400
         return {'success': False}
-    if verificationCode == request.params['verification_code']:
+    if verificationCode == request.params['verification_code'].lower():
         try:
+            tokenService.bind(token, request.params['bind_to'])
             tokenService.activate(token)
             return {'success': True}
         except:
@@ -111,7 +120,7 @@ def activateToken(request):
 
 @view_config(route_name='getCaptcha.png')
 def getCaptcha(request):
-    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', request.params['token'])):
+    if not bool(re.findall(r'^([a-f0-9]{40})$', request.params['token'])):
         request.response.status_int = 400
         return Response(body='parameter syntax error', content_type='text/plain', status='400')
     tokenService = TokenService()
@@ -144,7 +153,7 @@ def createSessiontoken(request):
 
 @view_config(route_name='/api/sessiontokens/:sessiontoken/captcha')
 def getSessiontokenCaptcha(request):
-    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', request.matchdict['sessiontoken'])):
+    if not bool(re.findall(r'^([a-f0-9]{40})$', request.matchdict['sessiontoken'])):
         return Response(body='parameter syntax error', content_type='text/plain', status_int=400)
     tokenService = TokenService()
     try:
@@ -163,7 +172,8 @@ def getSessiontokenCaptcha(request):
 @view_config(route_name='/api/dossiers/:id', renderer='json', xhr=False)
 def updateDossier(request):
     fr = FakeRequest()
-    fr.params = {'token': request.headers['x-passwdio-sessiontoken']}
+    fr.params = {'token': request.headers['x-passwdio-sessiontoken'],
+                 'owner_hash': request.matchdict['id']}
     if isInvalidToken(fr):
         return respondWithAccessError(request)
     walletService = WalletService()

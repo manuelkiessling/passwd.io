@@ -39,11 +39,27 @@ class TokenService(object):
         DBSession.merge(token)
         return token.token
 
-    def activate(self, token):
+    def bind(self, token, bindTo):
         tokenData = DBSession.query(Token).filter(Token.token==token).first()
         token = Token()
         token.token = tokenData.token
         token.verification_code = tokenData.verification_code
+        token.activated = tokenData.activated
+        token.bound_to = bindTo
+        DBSession.merge(token)
+
+    def bound(self, token, boundTo):
+        tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        return tokenData.bound_to == boundTo
+
+    def activate(self, token):
+        tokenData = DBSession.query(Token).filter(Token.token==token).first()
+        if tokenData.bound_to == '':
+            raise Exception('can\'t activate unbound token')
+        token = Token()
+        token.token = tokenData.token
+        token.verification_code = tokenData.verification_code
+        token.bound_to = tokenData.bound_to
         token.activated = True
         DBSession.merge(token)
 

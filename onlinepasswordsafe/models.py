@@ -40,4 +40,5 @@ class Token(Base):
     token = Column(String(40), default='', nullable=False, primary_key=True)
     verification_code = Column(String(6))
     activated = Column(Boolean())
+    bound_to = Column(String(64), default='', nullable=False)
 
