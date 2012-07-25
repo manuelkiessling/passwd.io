@@ -295,12 +295,24 @@ class FunctionalTests(unittest.TestCase):
         res = self.testapp.post('/api/token/activate.json', post_params, status=200)
         self.assertTrue(res.json['success'])
 
-    def test_get_token_fails_with_wrong_code(self):
+    def test_activate_token_fails_with_wrong_code(self):
+        res = self.testapp.get('/api/token/get.json', status=200)
+        token = res.json['token']
+        post_params = {'token': token, 'verification_code': 'ef1524'}
+        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
+        self.assertFalse(res.json['success'])
+
+    def test_activate_token_fails_with_syntactically_invalid_code(self):
         res = self.testapp.get('/api/token/get.json', status=200)
         token = res.json['token']
         post_params = {'token': token, 'verification_code': 'invalid'}
         res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertFalse(res.json['success'])
+        self.assertTrue(b'parameter syntax error' in res.body)
+
+    def test_activate_token_fails_with_syntactically_invalid_token(self):
+        post_params = {'token': 'poxjfiormj', 'verification_code': 'ef1524'}
+        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
+        self.assertTrue(b'parameter syntax error' in res.body)
 
     def test_get_captcha(self):
         res = self.testapp.get('/api/token/get.json', status=200)

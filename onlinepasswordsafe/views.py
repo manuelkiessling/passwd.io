@@ -1,3 +1,4 @@
+import re
 from pyramid.response import Response
 from pyramid.view import view_config
 
@@ -82,8 +83,15 @@ def getToken(request):
 
 @view_config(route_name='/api/token/activate', renderer='json', xhr=False)
 def activateToken(request):
-    tokenService = TokenService()
     token = request.params['token']
+    tokenService = TokenService()
+    if not bool(re.findall(r'^([a-fA-F0-9]{40})$', token)):
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
+    if not bool(re.findall(r'^([a-fA-F0-9]{6})$', request.params['verification_code'])):
+        tokenService.updateVerificationCode(token)
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
     try:
         verificationCode = tokenService.getVerificationCode(token)
     except:
