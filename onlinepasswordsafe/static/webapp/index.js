@@ -261,20 +261,6 @@ var application = function() {
     }
   };
 
-  var apiCall = function(url, type, sessiontoken, dossiertoken, data) {
-    return $.ajax(
-      url,
-      { type: type,
-        dataType: 'json',
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader('Accept', 'application/vnd.passwd.io+json; version=1.0.0-beta.1');
-          xhr.setRequestHeader('x-passwdio-sessiontoken', sessiontoken);
-          xhr.setRequestHeader('x-passwdio-dossiertoken', dossiertoken);
-        }
-      }
-    );
-  };
-
   var authformController = {
     _view: authformView,
     token: null,
@@ -283,15 +269,19 @@ var application = function() {
     access_hash: null,
     getToken: function() {
       var my = this;
-      request = apiCall('/api/sessiontokens', 'POST', null, null, null);
-      request.done(function(result) {
-        my.token = result.sessiontoken;
+      var url = '/api/token/get.json';
+      var getJSON = $.getJSON(url, function(data) {
+        $(data).each(function(index, value) {
+          my.token = value.token;
+        })
+      });
+      getJSON.success(function() {
         my.loadCaptcha();
       });
     },
     loadCaptcha: function() {
       this._view.setCaptchaUrl('images/pleasewait.png');
-      this._view.setCaptchaUrl('/api/sessiontokens/'+ this.token + '/captcha' + '?' + Math.random());
+      this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token + '&' + Math.random());
     },
     activateToken: function(callback) {
       var my = this;
