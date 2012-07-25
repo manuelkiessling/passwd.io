@@ -34,6 +34,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
 
 #howitworks {
   text-align: right;
+  padding-right: 8px;
 }
 
 #howitworks a {
@@ -43,7 +44,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
   margin-top: 30px;
 }
 #logo {
-  margin-top: 160px;
+  margin-top: 140px;
   font-weight: bold;
   color: #194B7E;
 }
