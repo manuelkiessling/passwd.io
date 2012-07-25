@@ -1,7 +1,7 @@
 from .models import DBSession, File
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import exists
-import uuid
+import re, uuid
 
 class Dossier(object):
     def __init__(self, owner_hash, access_hash, id=None, content=None):
@@ -75,14 +75,11 @@ class DossierRepository(object):
             raise
 
 class DossierValidation(object):
-    def hashIsLongEnough(self, hash):
-        return len(hash) >= 16
-
     def validateOwnerHash(self, owner_hash):
-        if not self.hashIsLongEnough(owner_hash):
-            raise Exception('owner_hash is too short')
+        if not bool(re.findall(r'^([a-fA-F0-9]{64})$', owner_hash)):
+            raise ValueError('owner_hash is too short')
 
     def validateAccessHash(self, access_hash):
-        if not self.hashIsLongEnough(access_hash):
-            raise Exception('access_hash is too short')
+        if not bool(re.findall(r'^([a-fA-F0-9]{64})$', access_hash)):
+            raise ValueError('access_hash is too short')
 

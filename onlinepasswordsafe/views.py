@@ -21,7 +21,11 @@ def save(request):
     if isInvalidToken(request):
         return respondWithAccessError(request)
     walletService = WalletService()
-    success = walletService.fileDossier(request.params['owner_hash'], request.params['access_hash'], request.params['content'])
+    try:
+        success = walletService.fileDossier(request.params['owner_hash'], request.params['access_hash'], request.params['content'])
+    except ValueError:
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
     if not success:
         request.response.status_int = 500
     return {'success': success}
@@ -36,9 +40,12 @@ def load(request):
         if not allowed:
             request.response.status_int = 400
             return {'status': 'Not allowed to request this dossier'}
+    except ValueError:
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
     except Exception as e:
-            request.response.status_int = 400
-            return {'status': 'Bad request'}
+            request.response.status_int = 500
+            return ''
     dossier = walletService.retrieveDossier(request.params['owner_hash'], request.params['access_hash'])
     if dossier:
         return { 'content': dossier.content }
@@ -54,6 +61,9 @@ def changeAccessHash(request):
     success = True
     try:
         walletService.changeAccessHash(owner_hash=request.params['owner_hash'], old_access_hash=request.params['old_access_hash'], new_access_hash=request.params['new_access_hash'])
+    except ValueError:
+        request.response.status_int = 400
+        return {'success': False, 'error': 'parameter syntax error'}
     except Exception as e:
         request.response.status_int = 400
         success = False
