@@ -1,3 +1,4 @@
+import re
 import unittest
 import transaction
 
@@ -382,6 +383,19 @@ class FunctionalTests(unittest.TestCase):
         for hash in invalid_new_access_hashes:
             res = self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
+
+    def test_api_sessiontoken(self):
+        res = self.testapp.post('/api/sessiontokens',
+                                headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
+                                status=200)
+        self.assertTrue(bool(re.findall(r'^\{"sessiontoken"\: "([a-f0-9]{40})"\}$', res.body)))
+        self.assertTrue('application/vnd.passwd.io+json; version=1.0.0-beta.1' == res.headers['Content-Type'])
+
+def apiHeaders(sessiontoken, dossiertoken):
+    return {'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1',
+            'x-passwdio-sessiontoken': sessiontoken,
+            'x-passwdio-dossiertoken': dossiertoken
+           }
 
 def getToken():
     ts = TokenService()

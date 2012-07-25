@@ -48,6 +48,7 @@ onlinepasswordsafe/static/webapp/images/icons-18-black.png
 onlinepasswordsafe/static/webapp/images/icons-18-white.png
 onlinepasswordsafe/static/webapp/images/icons-36-black.png
 onlinepasswordsafe/static/webapp/images/icons-36-white.png
+onlinepasswordsafe/static/webapp/images/pleasewait.png
 onlinepasswordsafe/static/webapp/images/tile-grey.png
 onlinepasswordsafe/static/webapp/vendor/jquery-1.7.1.min.js
 onlinepasswordsafe/static/webapp/vendor/jquery.mobile-1.1.1.min.css

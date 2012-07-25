@@ -128,6 +128,22 @@ def getCaptcha(request):
     except:
         return Response(body='error', content_type='text/plain', status='400')
 
+
+
+@view_config(route_name='/api/sessiontokens', renderer='json', xhr=False)
+def createSessionToken(request):
+    request.response.content_type = 'application/vnd.passwd.io+json; version=1.0.0-beta.1'
+    tokenService = TokenService()
+    token = tokenService.getToken()
+    if token:
+        return {'sessiontoken': token}
+    else:
+        request.response.status_int = 500
+        return False
+    
+
+
+
 conn_err_msg = """\
 Pyramid is having a problem using your SQL database.  The problem
 might be caused by one of the following things:

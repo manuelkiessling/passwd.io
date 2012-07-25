@@ -17,6 +17,10 @@ def main(global_config, **settings):
     config.add_route('/api/token/get', '/api/token/get.json')
     config.add_route('/api/token/activate', '/api/token/activate.json')
     config.add_route('getCaptcha.png', '/getCaptcha.png')
+
+    config.add_route('/api/sessiontokens', '/api/sessiontokens')
+
+
     config.scan()
     return config.make_wsgi_app()
 
