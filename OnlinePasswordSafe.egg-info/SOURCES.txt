@@ -13,7 +13,8 @@ OnlinePasswordSafe.egg-info/not-zip-safe
 OnlinePasswordSafe.egg-info/requires.txt
 OnlinePasswordSafe.egg-info/top_level.txt
 migrations/__init__.py
-migrations/manage.py
+migrations/manage.development.py
+migrations/manage.production.py
 migrations/versions/001_Add_file_table.py
 migrations/versions/002_Fixing_wrong_column_name_in_files_table.py
 migrations/versions/003_Files_table_id_to_36byte_uuid_string.py
