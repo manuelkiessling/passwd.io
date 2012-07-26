@@ -1,0 +1,25 @@
+Clone this repository into
+/opt/passwd.io
+as root
+
+sudo apt-get install python-dev python-pip
+sudo pip install virtualenv
+sudo mkdir /opt/passwd.io-env
+sudo virtualenv /opt/passwd.io-env
+sudo ln -s /opt/passwd.io /opt/passwd.io-env/app
+cd /opt/passwd.io-env
+. bin/activate
+cd app
+sudo pip install -e .
+sudo python migrations/manage.py version_control
+sudo python migrations/manage.py upgrade
+sudo chown nobody:nogroup OnlinePasswordSafe.db
+sudo chmod 0777 . # needed for nobody sqlite access
+sudo su - nobody
+bash
+cd /opt/passwd.io-env
+. bin/activate
+cd app
+pserve development.ini --reload
+
+
