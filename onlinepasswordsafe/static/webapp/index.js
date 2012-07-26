@@ -281,7 +281,7 @@ var application = function() {
     },
     loadCaptcha: function() {
       this._view.setCaptchaUrl('images/pleasewait.png');
-      this._view.setCaptchaUrl('/getCaptcha.png?token=' + this.token + '&' + Math.random());
+      this._view.setCaptchaUrl('/api/captcha?token=' + this.token + '&' + Math.random());
     },
     activateToken: function(callback) {
       var my = this;

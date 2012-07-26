@@ -16,7 +16,7 @@ def main(global_config, **settings):
     config.add_route('/api/dossier/change_access_hash', '/api/dossier/change_access_hash.json')
     config.add_route('/api/token/get', '/api/token/get.json')
     config.add_route('/api/token/activate', '/api/token/activate.json')
-    config.add_route('getCaptcha.png', '/getCaptcha.png')
+    config.add_route('/api/captcha', '/api/captcha')
 
     config.add_route('/api/sessiontokens', '/api/sessiontokens')
     config.add_route('/api/sessiontokens/:sessiontoken/captcha', '/api/sessiontokens/{sessiontoken}/captcha')

@@ -118,7 +118,7 @@ def activateToken(request):
         request.response.status_int = 400
         return {'success': False}
 
-@view_config(route_name='getCaptcha.png')
+@view_config(route_name='/api/captcha')
 def getCaptcha(request):
     if not bool(re.findall(r'^([a-f0-9]{40})$', request.params['token'])):
         request.response.status_int = 400
