@@ -16,6 +16,7 @@ requires = [
     'pyramid_debugtoolbar',
     'zope.sqlalchemy',
     'waitress',
+    'uwsgi',
     'WebTest',
     'BeautifulSoup',
     'skimpyGimpy'
