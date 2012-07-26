@@ -10,6 +10,7 @@ requires = [
     'pyramid',
     'SQLAlchemy',
     'sqlalchemy-migrate',
+    'psycopg2',
     'transaction',
     'pyramid_tm',
     'pyramid_debugtoolbar',

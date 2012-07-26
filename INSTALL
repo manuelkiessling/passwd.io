@@ -2,6 +2,13 @@ Clone this repository into
 /opt/passwd.io
 as root
 
+sudo su - postgres
+psql template1
+CREATE USER passwdio WITH PASSWORD 'Jnx725Frs09Hmc628Tfa42jM';
+CREATE DATABASE passwdio;
+GRANT ALL PRIVILEGES ON DATABASE passwdio TO passwdio;
+
+
 sudo apt-get install python-dev python-pip
 sudo pip install virtualenv
 sudo mkdir /opt/passwd.io-env
