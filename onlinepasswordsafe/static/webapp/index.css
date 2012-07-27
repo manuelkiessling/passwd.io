@@ -96,36 +96,36 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
 }
 
-#howitworks-teaser {
+#howitworks {
   font-size: 10pt;
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
-  width: 254px;
+  width: 67%;
   text-align: center;
-  margin-left: 96px;
-  margin-bottom: 0;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+
+#howitworks-teaser {
 }
 
 #howitworks a {
-  color: #666;
-  font-size: 8pt;
+  color: #222;
   font-weight: normal;
-  margin-left: 180px;
 }
 
 @media only screen and (min-width: 720px) {
   #howitworks a {
     font-size: 10pt;
-    font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
     text-shadow: 1px 0 #000;
     position: fixed;
-    left: -135px;
+    left: 45px;
     top: 387px;
     color: #aaa;
   }
 }
 
 #logo {
-  margin-top: 140px;
+  margin-top: 70px;
   font-weight: bold;
   color: #194B7E;
 }
