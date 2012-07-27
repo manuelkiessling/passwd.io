@@ -9,12 +9,14 @@ psql template1
 CREATE USER passwdio WITH PASSWORD 'Jnx725Frs09Hmc628Tfa42jM';
 CREATE DATABASE passwdio;
 GRANT ALL PRIVILEGES ON DATABASE passwdio TO passwdio;
+\q
+exit
 
 sudo apt-get install nginx
 sudo rm /etc/nginx/nginx.conf
-sudo ln -s /opt/passwd.io/deploy/nginx.conf /etc/nginx/nginx.conf
+sudo ln -s /opt/passwd.io/deployment/nginx/nginx.conf /etc/nginx/nginx.conf
 sudo rm /etc/nginx/sites-available/default
-sudo ln -s /opt/passwd.io/deploy/sites-available/default /etc/nginx/sites-available/default
+sudo ln -s /opt/passwd.io/deployment/nginx/sites-available/default /etc/nginx/sites-available/default
 sudo service nginx start
 
 sudo apt-get install python-dev python-pip
@@ -26,17 +28,17 @@ cd /opt/passwd.io-env
 . bin/activate
 cd app
 sudo pip install -e .
-sudo python migrations/manage.py version_control
-sudo python migrations/manage.py upgrade
+sudo python migrations/manage.production.py version_control
+sudo python migrations/manage.production.py upgrade
 sudo mkdir /var/run/passwd.io
 sudo mkdir /var/log/passwd.io
-chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
+sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
 sudo su - nobody
 bash
 cd /opt/passwd.io-env
 . bin/activate
 cd app
-uwsgi --ini-paste-logged development.ini
+uwsgi --ini-paste-logged production.ini
 # reload with
 # uwsgi --reload /var/run/passwd.io/uwsgi.pid
 
