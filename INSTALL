@@ -19,6 +19,9 @@ sudo rm /etc/nginx/sites-available/default
 sudo ln -s /opt/passwd.io/deployment/nginx/sites-available/default /etc/nginx/sites-available/default
 sudo service nginx start
 
+rm /etc/postgresql/9.1/main/postgresql.conf
+ln -s /opt/passwd.io/deployment/postgresql/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
+
 sudo apt-get install python-dev python-pip
 sudo pip install virtualenv
 sudo mkdir /opt/passwd.io-env
@@ -31,6 +34,8 @@ sudo pip install -e .
 sudo mkdir /var/run/passwd.io
 sudo mkdir /var/log/passwd.io
 sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
+sudo chown -R nobody:nogroup /opt/passwd.io
+sudo chown -R nobody:nogroup /opt/passwd.io-env
 sudo su - nobody
 bash
 cd /opt/passwd.io-env
