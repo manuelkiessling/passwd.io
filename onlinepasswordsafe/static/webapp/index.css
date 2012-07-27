@@ -12,7 +12,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
   box-shadow: 0 0 54px 0 #000;
 }
 
-@media only screen and (min-width: 961px) {
+@media only screen and (min-width: 721px) {
   .ui-page {
     padding: 20px;
     padding-top: 2px;
@@ -53,7 +53,19 @@ html, body.ui-mobile-viewport.ui-overlay-b {
   text-shadow: 1px 0 #000;
 }
 
-@media only screen and (max-width: 960px) {
+#explanation {
+  position: fixed;
+  left: 30px;
+  top: 66px;
+  width: 140px;
+  font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
+  font-size: 10pt;
+  text-align: center;
+  text-shadow: 1px 0 #000;
+  color: #999;
+}
+
+@media only screen and (max-width: 720px) {
   #navbar {
     display: none;
   }
@@ -84,21 +96,31 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
 }
 
-#howitworks {
-  text-align: right;
-  padding-right: 8px;
+#howitworks-teaser {
+  font-size: 10pt;
+  font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
+  width: 254px;
+  text-align: center;
+  margin-left: 96px;
+  margin-bottom: 0;
 }
 
 #howitworks a {
   color: #666;
   font-size: 8pt;
   font-weight: normal;
-  margin-top: 30px;
+  margin-left: 180px;
 }
 
-@media only screen and (min-width: 961px) {
+@media only screen and (min-width: 720px) {
   #howitworks a {
-    font-size: 12pt;
+    font-size: 10pt;
+    font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
+    text-shadow: 1px 0 #000;
+    position: fixed;
+    left: -135px;
+    top: 387px;
+    color: #aaa;
   }
 }
 
