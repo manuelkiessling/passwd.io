@@ -28,8 +28,6 @@ cd /opt/passwd.io-env
 . bin/activate
 cd app
 sudo pip install -e .
-sudo python migrations/manage.production.py version_control
-sudo python migrations/manage.production.py upgrade
 sudo mkdir /var/run/passwd.io
 sudo mkdir /var/log/passwd.io
 sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
@@ -38,6 +36,8 @@ bash
 cd /opt/passwd.io-env
 . bin/activate
 cd app
+python migrations/manage.production.py version_control
+python migrations/manage.production.py upgrade
 uwsgi --ini-paste-logged production.ini
 # reload with
 # uwsgi --reload /var/run/passwd.io/uwsgi.pid

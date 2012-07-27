@@ -28,14 +28,14 @@ class TokenService(object):
 
     def updateVerificationCode(self, token):
         tokenModel = DBSession.query(Token).filter(Token.token==token).first()
-        tokenModel.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:6]
+        tokenModel.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:4]
         DBSession.merge(tokenModel)
         return True
 
     def getToken(self):
         token = Token()
         token.token = sha.new(str(uuid.uuid4()) + '#+*dehju7/((3652fvcXXYdgzu"1238765ggxxxpP').hexdigest()
-        token.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:6]
+        token.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:4]
         DBSession.merge(token)
         return token.token
 

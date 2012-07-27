@@ -89,7 +89,7 @@ def activateToken(request):
       if not bool(re.findall(r'^([a-f0-9]{40})$', token)):
           request.response.status_int = 400
           return {'success': False, 'error': 'parameter syntax error'}
-      if not bool(re.findall(r'^([a-fA-F0-9]{6})$', request.params['verification_code'])):
+      if not bool(re.findall(r'^([a-fA-F0-9]{4})$', request.params['verification_code'])):
           tokenService.updateVerificationCode(token)
           request.response.status_int = 400
           return {'success': False, 'error': 'parameter syntax error'}
