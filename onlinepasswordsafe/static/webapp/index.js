@@ -241,9 +241,6 @@ var application = function() {
         authformController.saveDossier();
       });
     },
-    getVerificationCode: function() {
-      return $('#verificationcode').val();
-    },
     getUsername: function() {
       return $('#username').val();
     },
@@ -256,50 +253,12 @@ var application = function() {
     setContent: function(value) {
       $('#dossier-content').val(value);
     },
-    setCaptchaUrl: function(url) {
-      $('#captcha-image').attr('src', url);
-    }
   };
 
   var authformController = {
     _view: authformView,
-    token: null,
-    tokenIsVerified: false,
     owner_hash: null,
     access_hash: null,
-    getToken: function() {
-      var my = this;
-      var url = '/api/token/get.json';
-      var getJSON = $.getJSON(url, function(data) {
-        $(data).each(function(index, value) {
-          my.token = value.token;
-        })
-      });
-      getJSON.success(function() {
-        my.loadCaptcha();
-      });
-    },
-    loadCaptcha: function() {
-      this._view.setCaptchaUrl('images/pleasewait.png');
-      this._view.setCaptchaUrl('/api/captcha?token=' + this.token + '&' + Math.random());
-    },
-    activateToken: function(callback) {
-      var my = this;
-      var post_params = { token: my.token,
-                          'verification_code': my._view.getVerificationCode(),
-                          'bind_to': hash(my._view.getUsername(), '')
-                        };
-      var url = '/api/token/activate.json'
-      var post = $.post(url, post_params);
-      post.success(function() {
-        my.tokenIsVerified = true;
-        callback();
-      });
-      post.error(function() {
-        my.loadCaptcha();
-        window.alert('The image code is not correct.');
-      });
-    },
     loadDossier: function() {
       var my = this;
       var load = function() {
@@ -307,8 +266,7 @@ var application = function() {
           my.owner_hash = hash(my._view.getUsername(), '');
           my.access_hash = hash(my._view.getPassphrase(), my._view.getUsername());
           var url = '/api/dossier/load.json';
-              url += '?token=' + my.token;
-              url += '&owner_hash=' + my.owner_hash;
+              url += '?owner_hash=' + my.owner_hash;
               url += '&access_hash=' + my.access_hash;
           var getJSON = $.getJSON(url, function(data) {
             $(data).each(function(index, value) {
@@ -335,18 +293,13 @@ var application = function() {
           window.alert('Please provide an eMail address and a passphrase.');
         }
       };
-      if (my.tokenIsVerified) {
-        load();
-      } else {
-        my.activateToken(load);
-      }
+      load();
     },
     saveDossier: function(callbackOnSuccess, callbackOnError) {
       var my = this;
       if ( my._view.getUsername() && my._view.getPassphrase() ) {
         var content = encrypt(my._view.getContent(), my._view.getPassphrase());
         var url = '/api/dossier/save.json';
-            url += '?token=' + my.token;
         var post_params = { 'owner_hash': my.owner_hash, 'access_hash': my.access_hash, content: content };
         var post = $.post(url, post_params);
              
@@ -386,7 +339,6 @@ var application = function() {
   $('document').ready(function() {
     $('body').fadeIn();
     authformView.init();
-    authformController.getToken();
   });
 
 }();

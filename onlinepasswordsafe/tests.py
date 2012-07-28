@@ -7,7 +7,7 @@ from pyramid import testing
 from webtest import TestApp
 
 from .domain import DossierRepository, Dossier
-from .application import WalletService, TokenService
+from .application import WalletService
 
 def setUpUnitTests():
     from sqlalchemy import create_engine
@@ -156,111 +156,6 @@ class WalletServiceUnitTests(unittest.TestCase):
         dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
         self.assertTrue(dossier.content == 'Hello World')
 
-class TokenServiceUnittests(unittest.TestCase):
-    def setUp(self):
-        setUpUnitTests()
-
-    def tearDown(self):
-        tearDownUnitTests()
-
-    def test_binding_and_activation(self):
-        ts = TokenService()
-        token = ts.getToken()
-        ts.bind(token, 'foo')
-        ts.activate(token)
-        self.assertTrue(ts.isActivated(token))
-        self.assertTrue(ts.bound(token, 'foo'))
-        self.assertFalse(ts.bound(token, 'bar'))
-
-    def test_missing_activation(self):
-        ts = TokenService()
-        token = ts.getToken()
-        self.assertFalse(ts.isActivated(token))
-
-    def test_missing_binding(self):
-        ts = TokenService()
-        token = ts.getToken()
-        self.assertFalse(ts.bound(token, 'foo'))
-
-    def test_cant_bind_twice(self):
-        ts = TokenService()
-        token = ts.getToken()
-        ts.bind(token, 'foo')
-        thrown = False
-        try:
-            ts.bind(token, 'bar')
-        except:
-            thrown = True
-        self.assertTrue(thrown)
-
-    def test_update_verification_code(self):
-        ts = TokenService()
-        token = ts.getToken()
-        verificationCode = ts.getVerificationCode(token)
-        ts.updateVerificationCode(token)
-        self.assertTrue(verificationCode != ts.getVerificationCode(token))
-
-    def test_update_verification_code_fails_for_nonexistant_token(self):
-        ts = TokenService()
-        thrown = False
-        try:
-            ts.updateVerificationCode('bar')
-        except:
-            thrown = True
-        self.assertTrue(thrown)
-
-    def test_cant_activate_nonexisting_token(self):
-        ts = TokenService()
-        thrown = False
-        try:
-            ts.activate('foo')
-        except:
-            thrown = True
-        self.assertTrue(thrown)
-    
-    def test_cant_activate_unbound_token(self):
-        ts = TokenService()
-        token = ts.getToken()
-        thrown = False
-        try:
-            ts.activate(token)
-        except:
-            thrown = True
-        self.assertTrue(thrown)
-
-    def test_get_verification_code(self):
-        ts = TokenService()
-        token = ts.getToken()
-        self.assertTrue(ts.getVerificationCode(token))
-
-    def test_get_verification_code_for_nonexistant_token(self):
-        ts = TokenService()
-        thrown = False
-        try:
-            ts.getVerificationCode('foo')
-        except:
-            thrown = True
-        self.assertTrue(thrown)
-
-class ThrottleServiceUnittest(unittest.TestCase):
-    def setUp(self):
-        setUpUnitTests()
-
-    def tearDown(self):
-        tearDownUnitTests()
-
-    def test(self):
-        return
-        ts = ThrottleService(item='foo', max_events_per_second=1000000, max_events=5)
-        thrown = False
-        try:
-          for i in range(10):
-            ts.addEvent()
-        except:
-          thrown = True
-        self.assertTrue(thrown)
-        self.assertTrue(i == 4)
-
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
         from onlinepasswordsafe import main
@@ -281,139 +176,41 @@ class FunctionalTests(unittest.TestCase):
         DBSession.remove()
 
     def test_save_and_load(self):
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'foo'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
         self.assertTrue(res.body == '{"content": "foo"}')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'bar'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?token=' + t +'&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
         self.assertTrue(res.body == '{"content": "bar"}')
 
     def test_load_wrongaccesshash(self):
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=400) 
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=400) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
 
     def test_change_access_hash(self):
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'old_access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
-        res = self.testapp.post('/api/dossier/change_access_hash.json?token=' + t, post_params, status=200) 
+        res = self.testapp.post('/api/dossier/change_access_hash.json', post_params, status=200) 
         self.assertTrue(res.json['success'])
 
     def test_change_access_hash_fails(self):
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'old_access_hash': '4444444444444444444444444444444444444444444444444444444444444444', 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
-        res = self.testapp.post('/api/dossier/change_access_hash.json?token=' + t, post_params, status=400) 
+        res = self.testapp.post('/api/dossier/change_access_hash.json', post_params, status=400) 
         self.assertFalse(res.json['success'])
-
-    def test_get_and_activate_token(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        ts = TokenService()
-        verificationCode = ts.getVerificationCode(token)
-        post_params = {'token': token, 'verification_code': verificationCode, 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=200)
-        self.assertTrue(res.json['success'])
-
-    def test_get_and_activate_token_uppercase(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        ts = TokenService()
-        verificationCode = ts.getVerificationCode(token).upper()
-        post_params = {'token': token, 'verification_code': verificationCode, 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=200)
-        self.assertTrue(res.json['success'])
-
-    def test_activate_token_fails_without_binding(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        ts = TokenService()
-        verificationCode = ts.getVerificationCode(token)
-        post_params = {'token': token, 'verification_code': verificationCode}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertTrue(b'parameter syntax error' in res.body)
-
-    def test_activate_token_fails_with_syntactically_wrong_binding(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        ts = TokenService()
-        verificationCode = ts.getVerificationCode(token)
-        post_params = {'token': token, 'verification_code': verificationCode, 'bind_to': 'x111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertTrue(b'parameter syntax error' in res.body)
-
-    def test_activate_token_fails_with_wrong_code(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        post_params = {'token': token, 'verification_code': 'ef1524', 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertFalse(res.json['success'])
-
-    def test_activate_token_fails_with_syntactically_invalid_code(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        post_params = {'token': token, 'verification_code': 'invalid', 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertTrue(b'parameter syntax error' in res.body)
-
-    def test_activate_token_fails_with_syntactically_invalid_token(self):
-        post_params = {'token': 'poxjfiormj', 'verification_code': 'ef1524', 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertTrue(b'parameter syntax error' in res.body)
-
-    def test_subsequent_failed_activation_updates_verification_code(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        ts = TokenService()
-        verificationCode = ts.getVerificationCode(token)
-        post_params = {'token': token, 'verification_code': 'foo', 'bind_to': '1111111111111111111111111111111111111111111111111111111111111111'}
-        res = self.testapp.post('/api/token/activate.json', post_params, status=400)
-        self.assertTrue(verificationCode != ts.getVerificationCode(token))
-
-    def test_get_captcha(self):
-        res = self.testapp.get('/api/token/get.json', status=200)
-        token = res.json['token']
-        res = self.testapp.get('/api/captcha?token=' + token, status=200)
-
-    def test_get_captcha_fails_with_wrong_token(self):
-        res = self.testapp.get('/api/captcha?token=1111111111111111111111111111111111111111', status=400)
-
-    def test_get_captcha_fails_with_syntactically_invalid_token(self):
-        res = self.testapp.get('/api/captcha?token=x111111111111111111111111111111111111111', status=400)
-        self.assertTrue(b'parameter syntax error' in res.body)
-
-    def test_api_calls_fail_with_wrong_token(self):
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
-        twrong = getToken('0111111111111111111111111111111111111111111111111111111111111111')
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
-        self.testapp.post('/api/dossier/save.json?token=' + twrong, post_params, status=403)
-        self.testapp.post('/api/dossier/save.json?token=invalid', post_params, status=403)
-        self.testapp.post('/api/dossier/save.json', post_params, status=403)
-        self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200)
-        self.testapp.get('/api/dossier/load.json?token=' + twrong + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=403)
-        self.testapp.get('/api/dossier/load.json?token=invalid&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=403)
-        self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=403)
-        self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=3333333333333333333333333333333333333333333333333333333333333333&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200)
-        self.testapp.get('/api/dossier/change_access_hash.json?token=' + twrong + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=3333333333333333333333333333333333333333333333333333333333333333&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=403)
-        self.testapp.get('/api/dossier/change_access_hash.json?token=invalid&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=4444444444444444444444444444444444444444444444444444444444444444&old_access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=403)
-        self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=4444444444444444444444444444444444444444444444444444444444444444&old_access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=403)
 
     def test_api_calls_fail_with_syntactically_invalid_parameters(self):
-        t = getToken('cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611')
         correct_post_params = {'owner_hash': 'cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611', 'access_hash': '54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, correct_post_params, status=200)
-        self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611&access_hash=54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39', status=200)
-        self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611&new_access_hash=3333333333333333333333333333333333333333333333333333333333333333&old_access_hash=54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39', status=200)
+        self.testapp.post('/api/dossier/save.json', correct_post_params, status=200)
+        self.testapp.get('/api/dossier/load.json?owner_hash=cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611&access_hash=54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39', status=200)
+        self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611&new_access_hash=3333333333333333333333333333333333333333333333333333333333333333&old_access_hash=54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39', status=200)
         invalid_post_params = [
             {'owner_hash': '_b7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611',  'access_hash': '54ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39',  'content': 'fdjs9884jhf98'},
             {'owner_hash': 'cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611',  'access_hash': '_4ebdc364af430e55bf2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39',  'content': 'fdjs9884jhf98'},
@@ -425,12 +222,11 @@ class FunctionalTests(unittest.TestCase):
             {'owner_hash': 'cb7c862eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611',  'access_hash': '54ebdc364af430e55b*2b1cd8bbddcdf331e333bcc50d382dd590f3afd2bcb39',  'content': 'fdjs9884jhf98'},
         ]
         for params in invalid_post_params:
-            t = getToken(params['owner_hash'])
-            res = self.testapp.post('/api/dossier/save.json?token=' + t, params, status=400)
+            res = self.testapp.post('/api/dossier/save.json', params, status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
-            res = self.testapp.get('/api/dossier/load.json?token=' + t + '&owner_hash=' + params['owner_hash']  + '&access_hash=' + params['access_hash'], status=400)
+            res = self.testapp.get('/api/dossier/load.json?owner_hash=' + params['owner_hash']  + '&access_hash=' + params['access_hash'], status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
-            res = self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=' + params['owner_hash']  + '&old_access_hash=' + params['access_hash'] + '&new_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
+            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=' + params['owner_hash']  + '&old_access_hash=' + params['access_hash'] + '&new_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
         invalid_new_access_hashes = [
             '_b7c962eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611',
@@ -438,54 +234,9 @@ class FunctionalTests(unittest.TestCase):
             'cb7c962eb5400a13e01844a4f4f176072755085894bcd9b098185c5a126136112',
             'cb7c962eb5400a13e01844a4*4f176072755085894bcd9b098185c5a12613611',
         ]
-        t = getToken('1111111111111111111111111111111111111111111111111111111111111111')
         post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
-        self.testapp.post('/api/dossier/save.json?token=' + t, post_params, status=200)
+        self.testapp.post('/api/dossier/save.json', post_params, status=200)
         for hash in invalid_new_access_hashes:
-            res = self.testapp.get('/api/dossier/change_access_hash.json?token=' + t + '&owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
+            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
-
-
-    # New API
-
-    def test_api_create_sessiontoken(self):
-        res = self.testapp.post('/api/sessiontokens',
-                                headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
-                                status=200)
-        self.assertTrue(bool(re.findall(r'^\{"sessiontoken"\: "([a-f0-9]{40})"\}$', res.body)))
-        self.assertTrue(apiContentType() == res.headers['Content-Type'])
-
-    def test_api_get_sessiontoken_captcha(self):
-        res = self.testapp.post('/api/sessiontokens',
-                                headers={'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1'},
-                                status=200)
-        sessiontoken = json.loads(res.body)['sessiontoken']
-        res = self.testapp.get('/api/sessiontokens/' + sessiontoken + '/captcha',
-                               headers={'Accept': 'image/png'},
-                               status=200)
-        self.assertTrue('image/png' == res.headers['Content-Type'])
-
-    def test_update_dossier_content(self):
-        post_params = {'content': 'fdjs9884jhf98'}
-        res = self.testapp.post('/api/dossiers/1111111111111111111111111111111111111111111111111111111111111111',
-                                post_params,
-                                headers=apiHeaders(getToken('1111111111111111111111111111111111111111111111111111111111111111'), '2222222222222222222222222222222222222222222222222222222222222222'),
-                                status=200)
-        self.assertTrue(res.json['success'])
-
-def apiHeaders(sessiontoken, dossiertoken):
-    return {'Accept': 'application/vnd.passwd.io+json; version=1.0.0-beta.1',
-            'x-passwdio-sessiontoken': sessiontoken,
-            'x-passwdio-dossiertoken': dossiertoken
-           }
-
-def apiContentType():
-    return 'application/vnd.passwd.io+json; version=1.0.0-beta.1'
-
-def getToken(boundTo):
-    ts = TokenService()
-    t = ts.getToken()
-    ts.bind(t, boundTo)
-    ts.activate(t)
-    return t
 

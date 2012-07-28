@@ -99,7 +99,7 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
 #howitworks {
   font-size: 10pt;
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
-  width: 67%;
+  width: 80%;
   text-align: center;
   margin: 0 auto;
   margin-top: 20px;
@@ -125,7 +125,7 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
 }
 
 #logo {
-  margin-top: 70px;
+  margin-top: 118px;
   font-weight: bold;
   color: #194B7E;
 }
