@@ -281,7 +281,7 @@ var application = function() {
           });
   
           getJSON.success(function() {
-            window.location.href = '#two';
+            window.location.href = '#editor';
             my._view.hideOverlay(function() {
             });
           });
@@ -289,7 +289,7 @@ var application = function() {
           getJSON.error(function() {
             my.saveDossier(
               function() {
-                window.location.href = '#two';
+                window.location.href = '#editor';
               },
               function() {
                 window.alert('Could neither load nor create - please try different credentials.');
