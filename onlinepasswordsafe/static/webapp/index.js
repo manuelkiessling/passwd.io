@@ -275,6 +275,7 @@ var application = function() {
           });
   
           getJSON.success(function() {
+            $('#loadoverlay').fadeOut();
             window.location.href = '#two';
           });
   
@@ -293,7 +294,7 @@ var application = function() {
           window.alert('Please provide an eMail address and a passphrase.');
         }
       };
-      load();
+      $('#loadoverlay').fadeIn('slow', load);
     },
     saveDossier: function(callbackOnSuccess, callbackOnError) {
       var my = this;
