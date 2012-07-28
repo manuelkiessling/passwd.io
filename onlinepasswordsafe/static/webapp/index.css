@@ -27,7 +27,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
   }
 }
 
-#loadoverlay {
+#overlay {
   padding-top: 10%;
   text-align: center;
   font-family: "Gill Sans", "Helvetica", "Arial", sans-serif;
@@ -57,8 +57,9 @@ html, body.ui-mobile-viewport.ui-overlay-b {
 }
 
 #navbar-logo {
+  margin-left: 16px;
   font-weight: bold;
-  color: #bbb;
+  color: #396B9E;
   text-shadow: 1px 0 #000;
 }
 
@@ -143,7 +144,7 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
 #logo {
   margin-top: 118px;
   font-weight: bold;
-  color: #194B7E;
+  color: #396B9E;
 }
 
 #logo-subtext {

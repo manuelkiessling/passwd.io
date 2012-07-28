@@ -253,6 +253,12 @@ var application = function() {
     setContent: function(value) {
       $('#dossier-content').val(value);
     },
+    showOverlay: function(cb) {
+      $('#overlay').fadeIn('slow', cb);
+    },
+    hideOverlay: function(cb) {
+      $('#overlay').fadeOut('slow', cb);
+    },
   };
 
   var authformController = {
@@ -275,8 +281,9 @@ var application = function() {
           });
   
           getJSON.success(function() {
-            $('#loadoverlay').fadeOut();
             window.location.href = '#two';
+            my._view.hideOverlay(function() {
+            });
           });
   
           getJSON.error(function() {
@@ -294,30 +301,34 @@ var application = function() {
           window.alert('Please provide an eMail address and a passphrase.');
         }
       };
-      $('#loadoverlay').fadeIn('slow', load);
+      this._view.showOverlay(load);
     },
     saveDossier: function(callbackOnSuccess, callbackOnError) {
       var my = this;
       if ( my._view.getUsername() && my._view.getPassphrase() ) {
-        var content = encrypt(my._view.getContent(), my._view.getPassphrase());
-        var url = '/api/dossier/save.json';
-        var post_params = { 'owner_hash': my.owner_hash, 'access_hash': my.access_hash, content: content };
-        var post = $.post(url, post_params);
+        my._view.showOverlay(function() {
+          var content = encrypt(my._view.getContent(), my._view.getPassphrase());
+          var url = '/api/dossier/save.json';
+          var post_params = { 'owner_hash': my.owner_hash, 'access_hash': my.access_hash, content: content };
+          var post = $.post(url, post_params);
              
-        post.success(function() {
-          if (callbackOnSuccess !== undefined) {
-            callbackOnSuccess();
-          } else {
-            window.alert('Successfully stored your confidential data');
-          }
-        });
-            
-        post.error(function(error) {
-          if (callbackOnError !== undefined) {
-            callbackOnError();
-          } else {
-            window.alert('An error occured while trying to write to the server.');
-          }
+          post.success(function() {
+            my._view.hideOverlay(function() {});
+            if (callbackOnSuccess !== undefined) {
+              callbackOnSuccess();
+            } else {
+              window.alert('Successfully stored your confidential data');
+            }
+          });
+              
+          post.error(function(error) {
+            my._view.hideOverlay(function() {});
+            if (callbackOnError !== undefined) {
+              callbackOnError();
+            } else {
+              window.alert('An error occured while trying to write to the server.');
+            }
+          });
         });
       } else {
         window.alert('Please provide an eMail address and a passphrase.');
