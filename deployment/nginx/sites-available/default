@@ -21,7 +21,7 @@ server {
 	gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
   location / {
-    limit_req   zone=read  burst=25;
+    limit_req   zone=read  burst=50;
     root /opt/passwd.io/onlinepasswordsafe/static/webapp/;
   }
 
@@ -30,7 +30,7 @@ server {
   }
 
   location ~*\.(?:ico|png|css|js|gif|jpe?g)$ {
-    limit_req   zone=read  burst=25;
+    limit_req   zone=read  burst=50;
     root /opt/passwd.io/onlinepasswordsafe/static/webapp/;
     expires 30d;
     add_header Pragma public;
@@ -38,7 +38,7 @@ server {
   }
 
   location /api {
-    limit_req   zone=read  burst=15;
+    limit_req   zone=read  burst=25;
     uwsgi_pass  unix:///tmp/uwsgi.sock;
     include     uwsgi_params;
     uwsgi_param SCRIPT_NAME /;
