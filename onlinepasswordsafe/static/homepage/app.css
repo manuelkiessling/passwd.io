@@ -7,7 +7,7 @@
 }
 
 .hero-unit h1 {
-  font-size: 36pt;
+  font-size: 24pt;
 }
 
 .hero-unit p {
@@ -16,7 +16,7 @@
 }
 
 #text {
-  margin-top: 160px;
+  margin-top: 40px;
   max-width: 640px;
 }
 
