@@ -5,6 +5,11 @@ var application = function() {
       $('#load-button').click(function() {
         authformController.loadDossier();
       });
+      $('#username, #passphrase').keypress(function(e) {
+        if (e.which == 13) {
+          authformController.loadDossier();
+        }
+      });
       $('#save-button').click(function() {
         authformController.saveDossier();
       });
@@ -33,6 +38,11 @@ var application = function() {
     _view: authformView,
     owner_hash: null,
     access_hash: null,
+    init: function() {
+      if (window.location.hash == '#editor' && this.owner_hash == null) {
+        window.location.hash = '';
+      }
+    },
     loadDossier: function() {
       var my = this;
       var load = function() {
@@ -40,21 +50,19 @@ var application = function() {
           my.owner_hash = hash(my._view.getUsername(), '');
           my.access_hash = hash(my._view.getPassphrase(), my._view.getUsername());
           var url = '/api/dossier/load.json';
-              url += '?owner_hash=' + my.owner_hash;
-              url += '&access_hash=' + my.access_hash;
-          var getJSON = $.getJSON(url, function(data) {
+          var post_params = { 'owner_hash': my.owner_hash, 'access_hash': my.access_hash };
+          var post = $.post(url, post_params);
+  
+          post.success(function(data) {
             $(data).each(function(index, value) {
               my._view.setContent(decrypt(value.content, my._view.getPassphrase()));
             });
-          });
-  
-          getJSON.success(function() {
             window.location.href = '#editor';
             my._view.hideOverlay(function() {
             });
           });
   
-          getJSON.error(function() {
+          post.error(function() {
             my.saveDossier(
               function() {
                 window.location.href = '#editor';
@@ -117,8 +125,9 @@ var application = function() {
   };
 
   $('document').ready(function() {
-    $('body').fadeIn();
     authformView.init();
+    authformController.init();
+    $('body').fadeIn();
   });
 
 }();

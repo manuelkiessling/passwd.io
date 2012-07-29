@@ -1,4 +1,19 @@
+# app redirect
 server {
+  server_name passwd.io;
+  keepalive_timeout 70;
+  charset utf-8;
+  listen 80;
+  rewrite ^(.*) https://passwd.io permanent;
+  location / {
+    limit_req   zone=read  burst=100;
+    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+  }
+}
+
+# app
+server {
+  server_name passwd.io;
   keepalive_timeout 70;
 
   charset utf-8;
@@ -49,6 +64,62 @@ server {
     uwsgi_pass  unix:///tmp/uwsgi.sock;
     include     uwsgi_params;
     uwsgi_param SCRIPT_NAME /;
+  }
+
+}
+
+# homepage redirect
+server {
+  server_name www.passwd.io;
+  keepalive_timeout 70;
+  charset utf-8;
+  listen 80;
+  rewrite ^(.*) https://www.passwd.io permanent;
+  location / {
+    limit_req   zone=read  burst=100;
+    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+  }
+}
+
+# homepage
+server {
+  server_name www.passwd.io;
+  keepalive_timeout 70;
+
+  charset utf-8;
+
+  listen 443 ssl;
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  add_header Strict-Transport-Security "max-age=315360000; includeSubdomains";
+  ssl_certificate /opt/passwd.io/deployment/ssl/www.passwd.io.chained.crt;
+  ssl_certificate_key /opt/passwd.io/deployment/ssl/passwd.io.csr.key;
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 10m;
+
+	gzip on;
+	gzip_disable "msie6";
+	gzip_vary on;
+	gzip_proxied any;
+	gzip_comp_level 1;
+	gzip_buffers 16 8k;
+	gzip_http_version 1.1;
+	gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+  location / {
+    limit_req   zone=read  burst=50;
+    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+  }
+
+  location ~ /\. {
+    deny all;
+  }
+
+  location ~*\.(?:ico|png|css|js|gif|jpe?g)$ {
+    limit_req   zone=read  burst=50;
+    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+    expires 30d;
+    add_header Pragma public;
+    add_header Cache-Control "public";
   }
 
 }
