@@ -54,8 +54,9 @@ html, body.ui-mobile-viewport.ui-overlay-b {
 }
 
 #navbar-logo {
-  margin-left: 16px;
+  margin-left: 8px;
   font-weight: bold;
+  font-size: 19px;
   color: #396B9E;
   text-shadow: 1px 0 #000;
 }
@@ -141,6 +142,7 @@ input.ui-input-text, textarea.ui-input-text, .ui-input-search {
 #logo {
   margin-top: 118px;
   font-weight: bold;
+  font-size: 19px;
   color: #396B9E;
 }
 
