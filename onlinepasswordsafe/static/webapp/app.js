@@ -20,6 +20,9 @@ var application = function() {
     getPassphrase: function() {
       return $('#passphrase').val();
     },
+    confirmShortPassphrase: function(message) {
+      return confirm(message);
+    },
     getContent: function() {
       return $('#dossier-content').val();
     },
@@ -58,20 +61,24 @@ var application = function() {
               my._view.setContent(decrypt(value.content, my._view.getPassphrase()));
             });
             window.location.href = '#editor';
-            my._view.hideOverlay(function() {
-            });
+            my._view.hideOverlay(function() {});
           });
   
           post.error(function() {
-            my.saveDossier(
-              function() {
-                window.location.href = '#editor';
-              },
-              function() {
-                window.alert('Could neither load nor create - please try different credentials.');
-              }
-            );
-            //window.alert('An error occured while trying to read from the server.');
+            if (   my._view.getPassphrase().length > 15
+                || my._view.confirmShortPassphrase('Please confirm that you want to use a passphrase that is less than 16 characters!')) {
+              my.saveDossier(
+                function() {
+                  window.location.href = '#editor';
+                },
+                function() {
+                  window.alert('Could neither load nor create - please try different credentials.');
+                }
+              );
+              //window.alert('An error occured while trying to read from the server.');
+            } else {
+              my._view.hideOverlay(function() {});
+            }
           });
         } else {
           window.alert('Please provide an eMail address and a passphrase.');
