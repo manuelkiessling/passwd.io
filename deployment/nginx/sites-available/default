@@ -1,6 +1,8 @@
 # app redirect
 server {
   server_name passwd.io;
+	access_log /var/log/nginx/passwd.io.80.access.log;
+	error_log /var/log/nginx/passwd.io.80.error.log;
   keepalive_timeout 70;
   charset utf-8;
   listen 80;
@@ -14,6 +16,8 @@ server {
 # app
 server {
   server_name passwd.io;
+  access_log /var/log/nginx/passwd.io.443.access.log;
+  error_log /var/log/nginx/passwd.io.443.error.log;
   keepalive_timeout 70;
 
   charset utf-8;
@@ -71,6 +75,8 @@ server {
 # homepage redirect
 server {
   server_name www.passwd.io;
+  access_log /var/log/nginx/www.passwd.io.80.access.log;
+  error_log /var/log/nginx/www.passwd.io.80.error.log;
   keepalive_timeout 70;
   charset utf-8;
   listen 80;
@@ -84,6 +90,8 @@ server {
 # homepage
 server {
   server_name www.passwd.io;
+  access_log /var/log/nginx/www.passwd.io.443.access.log;
+  error_log /var/log/nginx/www.passwd.io.443.error.log;
   keepalive_timeout 70;
 
   charset utf-8;
