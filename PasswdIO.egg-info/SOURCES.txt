@@ -2,6 +2,7 @@ CHANGES.txt
 MANIFEST.in
 README.txt
 development.ini
+live.ini
 production.ini
 setup.cfg
 setup.py
@@ -72,5 +73,3 @@ passwdio/static/webapp/vendor/jquery-1.7.1.min.js
 passwdio/static/webapp/vendor/jquery.mobile-1.1.1.min.css
 passwdio/static/webapp/vendor/jquery.mobile-1.1.1.min.js
 passwdio/static/webapp/vendor/sjcl.js
-passwdio/templates/editor.pt
-passwdio/templates/mytemplate.pt
