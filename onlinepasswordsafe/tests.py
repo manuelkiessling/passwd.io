@@ -9,6 +9,9 @@ from webtest import TestApp
 from .domain import DossierRepository, Dossier
 from .application import WalletService
 
+valid_owner_hash = '1111111111111111111111111111111111111111111111111111111111111111'
+valid_access_hash = '2222222222222222222222222222222222222222222222222222222222222222'
+
 def setUpUnitTests():
     from sqlalchemy import create_engine
     from .models import DBSession, Base
@@ -32,32 +35,32 @@ class DomainUnitTests(unittest.TestCase):
         pass
 
     def test_dossierRepository_exists(self):
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='Hello World')
         repo = DossierRepository()
         repo.store(dossier)
-        exists = repo.exists('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        exists = repo.exists(valid_owner_hash, valid_access_hash)
         self.assertTrue(exists)
 
     def test_subsequent_storing_overwrites_existing_dossier(self):
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='Hello World')
         id = dossier.id
         repo = DossierRepository()
         repo.store(dossier)
-        dossier = repo.find(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = repo.find(owner_hash=valid_owner_hash, access_hash=valid_access_hash)
         self.assertTrue(dossier.id == id)
         self.assertTrue(dossier.content == 'Hello World')
-        dossier = Dossier(id=id, owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='foo')
+        dossier = Dossier(id=id, owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='foo')
         repo = DossierRepository()
         repo.store(dossier)
-        dossier = repo.find(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = repo.find(owner_hash=valid_owner_hash, access_hash=valid_access_hash)
         self.assertTrue(dossier.id == id)
         self.assertTrue(dossier.content == 'foo')
 
     def test_cant_store_dossier_with_existing_owner_hash_under_different_id(self):
         repo = DossierRepository()
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='Hello World')
         repo.store(dossier)
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='Hello World')
         try:
             repo.store(dossier)
         except:
@@ -66,7 +69,7 @@ class DomainUnitTests(unittest.TestCase):
 
     def test_cant_store_dossier_with_invalid_hashes(self):
         repo = DossierRepository()
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash=valid_access_hash, content='Hello World')
         dossier.owner_hash = 'x111111111111111111111111111111111111111111111111111111111111111'
         thrown = False
         try:
@@ -74,7 +77,7 @@ class DomainUnitTests(unittest.TestCase):
         except:
             thrown = True
         self.assertTrue(thrown)
-        dossier.owner_hash = '1111111111111111111111111111111111111111111111111111111111111111'
+        dossier.owner_hash = valid_owner_hash
         dossier.access_hash = 'x222222222222222222222222222222222222222222222222222222222222222'
         thrown = False
         try:
@@ -85,17 +88,17 @@ class DomainUnitTests(unittest.TestCase):
 
     def test_can_store_dossier_with_existing_owner_hash_with_different_access_hash(self):
         repo = DossierRepository()
-        dossier = Dossier(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='3333333333333333333333333333333333333333333333333333333333333333', content='Hello World')
+        dossier = Dossier(owner_hash=valid_owner_hash, access_hash='3333333333333333333333333333333333333333333333333333333333333333', content='Hello World')
         id = dossier.id
         repo.store(dossier)
-        dossier.access_hash = '2222222222222222222222222222222222222222222222222222222222222222'
+        dossier.access_hash = valid_access_hash
         repo.store(dossier)
-        dossier = repo.find(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', access_hash='2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = repo.find(owner_hash=valid_owner_hash, access_hash=valid_access_hash)
         self.assertTrue(dossier.id == id)
 
     def test_dossierRepository_exists_not(self):
         repo = DossierRepository()
-        exists = repo.exists('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        exists = repo.exists(valid_owner_hash, valid_access_hash)
         self.assertFalse(exists)
 
 class WalletServiceUnitTests(unittest.TestCase):
@@ -107,53 +110,53 @@ class WalletServiceUnitTests(unittest.TestCase):
 
     def test_filing_a_dossier_with_an_existing_owner_access_hash_by_overwriting(self):
         ws = WalletService()
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'Hello World')
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'foo')
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'Hello World')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'foo')
+        dossier = ws.retrieveDossier(valid_owner_hash, valid_access_hash)
         self.assertTrue(dossier.content == 'foo')
 
     def test_filing_a_dossier_with_an_existing_owner_access_hash_by_overwriting(self):
         ws = WalletService()
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'Hello World')
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'foo')
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'Hello World')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'foo')
+        dossier = ws.retrieveDossier(valid_owner_hash, valid_access_hash)
         self.assertTrue(dossier.content == 'foo')
 
     def test_file_doesnt_change_access_hash(self):
         ws = WalletService()
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'Hello World')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'Hello World')
         thrown = False
         try:
-            ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '3333333333333333333333333333333333333333333333333333333333333333', 'Hello World')
+            ws.fileDossier(valid_owner_hash, '3333333333333333333333333333333333333333333333333333333333333333', 'Hello World')
         except:
             thrown = True
         self.assertTrue(thrown)
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = ws.retrieveDossier(valid_owner_hash, valid_access_hash)
         self.assertTrue(dossier.content == 'Hello World')
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '3333333333333333333333333333333333333333333333333333333333333333')
+        dossier = ws.retrieveDossier(valid_owner_hash, '3333333333333333333333333333333333333333333333333333333333333333')
         self.assertFalse(dossier)
 
     def test_change_access_hash(self):
         ws = WalletService()
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'Hello World')
-        ws.changeAccessHash(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', old_access_hash='2222222222222222222222222222222222222222222222222222222222222222', new_access_hash='3333333333333333333333333333333333333333333333333333333333333333')
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '3333333333333333333333333333333333333333333333333333333333333333')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'Hello World')
+        ws.changeAccessHash(owner_hash=valid_owner_hash, old_access_hash=valid_access_hash, new_access_hash='3333333333333333333333333333333333333333333333333333333333333333')
+        dossier = ws.retrieveDossier(valid_owner_hash, '3333333333333333333333333333333333333333333333333333333333333333')
         self.assertTrue(dossier.content == 'Hello World')
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = ws.retrieveDossier(valid_owner_hash, valid_access_hash)
         self.assertFalse(dossier)
 
     def test_change_access_hash_fails_with_wrong_old_access_hash(self):
         ws = WalletService()
-        ws.fileDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222', 'Hello World')
+        ws.fileDossier(valid_owner_hash, valid_access_hash, 'Hello World')
         thrown = False
         try:
-            ws.changeAccessHash(owner_hash='1111111111111111111111111111111111111111111111111111111111111111', old_access_hash='4444444444444444444444444444444444444444444444444444444444444444', new_access_hash='3333333333333333333333333333333333333333333333333333333333333333')
+            ws.changeAccessHash(owner_hash=valid_owner_hash, old_access_hash='4444444444444444444444444444444444444444444444444444444444444444', new_access_hash='3333333333333333333333333333333333333333333333333333333333333333')
         except:
             thrown = True
         self.assertTrue(thrown)        
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '3333333333333333333333333333333333333333333333333333333333333333')
+        dossier = ws.retrieveDossier(valid_owner_hash, '3333333333333333333333333333333333333333333333333333333333333333')
         self.assertFalse(dossier)
-        dossier = ws.retrieveDossier('1111111111111111111111111111111111111111111111111111111111111111', '2222222222222222222222222222222222222222222222222222222222222222')
+        dossier = ws.retrieveDossier(valid_owner_hash, valid_access_hash)
         self.assertTrue(dossier.content == 'Hello World')
 
 class FunctionalTests(unittest.TestCase):
@@ -176,33 +179,33 @@ class FunctionalTests(unittest.TestCase):
         DBSession.remove()
 
     def test_save_and_load(self):
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'foo'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'foo'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=' + valid_owner_hash + '&access_hash=' + valid_access_hash, status=200) 
         self.assertTrue(res.body == '{"content": "foo"}')
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'bar'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'bar'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=200) 
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=' + valid_owner_hash + '&access_hash=' + valid_access_hash, status=200) 
         self.assertTrue(res.body == '{"content": "bar"}')
 
     def test_load_wrongaccesshash(self):
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'fdjs9884jhf98'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
-        res = self.testapp.get('/api/dossier/load.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=400) 
+        res = self.testapp.get('/api/dossier/load.json?owner_hash=' + valid_owner_hash + '&access_hash=3333333333333333333333333333333333333333333333333333333333333333', status=400) 
         self.assertFalse(b'fdjs9884jhf98' in res.body)
         self.assertTrue(b'Not allowed' in res.body)
 
     def test_change_access_hash(self):
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'fdjs9884jhf98'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'old_access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
+        post_params = {'owner_hash': valid_owner_hash, 'old_access_hash': valid_access_hash, 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
         res = self.testapp.post('/api/dossier/change_access_hash.json', post_params, status=200) 
         self.assertTrue(res.json['success'])
 
     def test_change_access_hash_fails(self):
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'fdjs9884jhf98'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'old_access_hash': '4444444444444444444444444444444444444444444444444444444444444444', 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
+        post_params = {'owner_hash': valid_owner_hash, 'old_access_hash': '4444444444444444444444444444444444444444444444444444444444444444', 'new_access_hash': '3333333333333333333333333333333333333333333333333333333333333333'}
         res = self.testapp.post('/api/dossier/change_access_hash.json', post_params, status=400) 
         self.assertFalse(res.json['success'])
 
@@ -226,7 +229,7 @@ class FunctionalTests(unittest.TestCase):
             self.assertTrue(b'parameter syntax error' in res.body)
             res = self.testapp.get('/api/dossier/load.json?owner_hash=' + params['owner_hash']  + '&access_hash=' + params['access_hash'], status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
-            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=' + params['owner_hash']  + '&old_access_hash=' + params['access_hash'] + '&new_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
+            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=' + params['owner_hash']  + '&old_access_hash=' + params['access_hash'] + '&new_access_hash=' + valid_access_hash, status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
         invalid_new_access_hashes = [
             '_b7c962eb5400a13e01844a4f4f176072755085894bcd9b098185c5a12613611',
@@ -234,9 +237,9 @@ class FunctionalTests(unittest.TestCase):
             'cb7c962eb5400a13e01844a4f4f176072755085894bcd9b098185c5a126136112',
             'cb7c962eb5400a13e01844a4*4f176072755085894bcd9b098185c5a12613611',
         ]
-        post_params = {'owner_hash': '1111111111111111111111111111111111111111111111111111111111111111', 'access_hash': '2222222222222222222222222222222222222222222222222222222222222222', 'content': 'fdjs9884jhf98'}
+        post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'fdjs9884jhf98'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
         for hash in invalid_new_access_hashes:
-            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=1111111111111111111111111111111111111111111111111111111111111111&new_access_hash=' + hash + '&old_access_hash=2222222222222222222222222222222222222222222222222222222222222222', status=400)
+            res = self.testapp.get('/api/dossier/change_access_hash.json?owner_hash=' + valid_owner_hash + '&new_access_hash=' + hash + '&old_access_hash=' + valid_access_hash, status=400)
             self.assertTrue(b'parameter syntax error' in res.body)
 

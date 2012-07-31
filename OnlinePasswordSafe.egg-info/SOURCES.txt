@@ -23,6 +23,7 @@ migrations/versions/005_files_owner_hash_unique_second_try.py
 migrations/versions/006_add_tokens_table.py
 migrations/versions/007_tokens_add_bound_to.py
 migrations/versions/008_Files_table_hashes_to_64byte_string.py
+migrations/versions/009_drop_tokens.py
 migrations/versions/__init__.py
 onlinepasswordsafe/__init__.py
 onlinepasswordsafe/application.py
