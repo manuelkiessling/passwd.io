@@ -2,4 +2,4 @@
 from migrate.versioning.shell import main
 
 if __name__ == '__main__':
-    main(url='sqlite:///OnlinePasswordSafe.db', debug='False', repository='./migrations')
+    main(url='sqlite:///PasswdIO.db', debug='False', repository='./migrations')

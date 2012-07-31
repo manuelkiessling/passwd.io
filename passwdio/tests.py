@@ -21,7 +21,7 @@ def setUpUnitTests():
     return DBSession
 
 def tearDownUnitTests():
-    from onlinepasswordsafe.models import DBSession
+    from passwdio.models import DBSession
     DBSession.remove()
 
 class DomainUnitTests(unittest.TestCase):
@@ -161,7 +161,7 @@ class WalletServiceUnitTests(unittest.TestCase):
 
 class FunctionalTests(unittest.TestCase):
     def setUp(self):
-        from onlinepasswordsafe import main
+        from passwdio import main
         settings = { 'sqlalchemy.url': 'sqlite://' }
         app = main({}, **settings)
         from webtest import TestApp
@@ -175,7 +175,7 @@ class FunctionalTests(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
-        from onlinepasswordsafe.models import DBSession
+        from passwdio.models import DBSession
         DBSession.remove()
 
     def test_save_and_load(self):

@@ -21,9 +21,9 @@ requires = [
     'BeautifulSoup',
     ]
 
-setup(name='OnlinePasswordSafe',
+setup(name='PasswdIO',
       version='0.0',
-      description='OnlinePasswordSafe',
+      description='PasswdIO',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
         "Programming Language :: Python",
@@ -38,13 +38,13 @@ setup(name='OnlinePasswordSafe',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      test_suite='onlinepasswordsafe',
+      test_suite='passwdio',
       install_requires=requires,
       entry_points="""\
       [paste.app_factory]
-      main = onlinepasswordsafe:main
+      main = passwdio:main
       [console_scripts]
-      initialize_OnlinePasswordSafe_db = onlinepasswordsafe.scripts.initializedb:main
+      initialize_PasswdIO_db = passwdio.scripts.initializedb:main
       """,
       )
 

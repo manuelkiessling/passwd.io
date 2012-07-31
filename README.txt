@@ -1,4 +1,4 @@
-OnlinePasswordSafe README
+PasswdIO README
 ==================
 
 Getting Started
@@ -8,7 +8,7 @@ Getting Started
 
 - $venv/bin/python setup.py develop
 
-- $venv/bin/populate_OnlinePasswordSafe development.ini
+- $venv/bin/populate_PasswdIO development.ini
 
 - $venv/bin/pserve development.ini
 

@@ -9,7 +9,7 @@ server {
   rewrite ^(.*) https://passwd.io permanent;
   location / {
     limit_req   zone=read  burst=100;
-    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+    root /opt/passwd.io/passwdio/static/homepage/;
   }
 }
 
@@ -41,7 +41,7 @@ server {
 
   location / {
     limit_req   zone=read  burst=50;
-    root /opt/passwd.io/onlinepasswordsafe/static/webapp/;
+    root /opt/passwd.io/passwdio/static/webapp/;
   }
 
   location ~ /\. {
@@ -50,7 +50,7 @@ server {
 
   location ~*\.(?:ico|png|css|js|gif|jpe?g)$ {
     limit_req   zone=read  burst=50;
-    root /opt/passwd.io/onlinepasswordsafe/static/webapp/;
+    root /opt/passwd.io/passwdio/static/webapp/;
     expires 30d;
     add_header Pragma public;
     add_header Cache-Control "public";
@@ -83,7 +83,7 @@ server {
   rewrite ^(.*) https://www.passwd.io permanent;
   location / {
     limit_req   zone=read  burst=100;
-    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+    root /opt/passwd.io/passwdio/static/homepage/;
   }
 }
 
@@ -115,7 +115,7 @@ server {
 
   location / {
     limit_req   zone=read  burst=50;
-    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+    root /opt/passwd.io/passwdio/static/homepage/;
   }
 
   location ~ /\. {
@@ -124,7 +124,7 @@ server {
 
   location ~*\.(?:ico|png|css|js|gif|jpe?g)$ {
     limit_req   zone=read  burst=50;
-    root /opt/passwd.io/onlinepasswordsafe/static/homepage/;
+    root /opt/passwd.io/passwdio/static/homepage/;
     expires 30d;
     add_header Pragma public;
     add_header Cache-Control "public";
