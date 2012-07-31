@@ -19,7 +19,6 @@ requires = [
     'uwsgi',
     'WebTest',
     'BeautifulSoup',
-    'skimpyGimpy'
     ]
 
 setup(name='OnlinePasswordSafe',

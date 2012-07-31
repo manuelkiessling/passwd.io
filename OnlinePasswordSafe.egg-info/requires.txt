@@ -10,4 +10,3 @@ waitress
 uwsgi
 WebTest
 BeautifulSoup
-skimpyGimpy
