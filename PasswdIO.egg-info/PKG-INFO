@@ -1,12 +1,12 @@
 Metadata-Version: 1.1
-Name: OnlinePasswordSafe
+Name: PasswdIO
 Version: 0.0
-Summary: OnlinePasswordSafe
+Summary: PasswdIO
 Home-page: UNKNOWN
 Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
-Description: OnlinePasswordSafe README
+Description: PasswdIO README
         ==================
         
         Getting Started
@@ -16,7 +16,7 @@ Description: OnlinePasswordSafe README
         
         - $venv/bin/python setup.py develop
         
-        - $venv/bin/populate_OnlinePasswordSafe development.ini
+        - $venv/bin/populate_PasswdIO development.ini
         
         - $venv/bin/pserve development.ini
         
