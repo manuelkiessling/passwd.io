@@ -12,6 +12,7 @@
     pip install -e ./
     python migrations/manage.development.py version_control
     python migrations/manage.development.py upgrade
+    python setup.py test
     pserve development.ini --reload
 
 Visit http://localhost:6543/static/webapp/
