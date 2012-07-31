@@ -1,73 +1,6 @@
 import uuid, sha
 from .domain import Dossier, DossierRepository
-from .models import DBSession, Token
-
-class ThrottleService(object):
-    def __init__(self, item, max_events, max_events_per_second, expires=86400):
-        self.identifier = sha.new(item + str(max_events) + str(max_events_per_second) + str(expires)).hexdigest()
-        tw = DBSession.query(ThrottleWatch).filter(ThrottleWatch.identifier==self.identifier).first()
-        if not tw:
-          tw = ThrottleWatch()
-          tw.identifier = self.identifier
-          tw.max_events = max_events
-          tw.max_events_per_second = max_events_per_second
-          tw.expires = expires
-          DBSession.merge(tw)
-
-    def addEvent(self):
-        pass
-#        te = ThrottleEvent()
-#        te.identifier = self.identifier
-#        te.
-
-
-class TokenService(object):
-    def getVerificationCode(self, token):
-        tokenModel = DBSession.query(Token).filter(Token.token==token).first()
-        return tokenModel.verification_code
-
-    def updateVerificationCode(self, token):
-        tokenModel = DBSession.query(Token).filter(Token.token==token).first()
-        tokenModel.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:4]
-        DBSession.merge(tokenModel)
-        return True
-
-    def getToken(self):
-        token = Token()
-        token.token = sha.new(str(uuid.uuid4()) + '#+*dehju7/((3652fvcXXYdgzu"1238765ggxxxpP').hexdigest()
-        token.verification_code = sha.new(str(uuid.uuid4()) + 'jdiUHB()&%dhehdu???opc6GGDHskj').hexdigest()[0:4]
-        DBSession.merge(token)
-        return token.token
-
-    def bind(self, token, bindTo):
-        tokenData = DBSession.query(Token).filter(Token.token==token).first()
-        if tokenData.bound_to != '':
-            raise Exception('can\'t bind twice')
-        token = Token()
-        token.token = tokenData.token
-        token.verification_code = tokenData.verification_code
-        token.activated = tokenData.activated
-        token.bound_to = bindTo
-        DBSession.merge(token)
-
-    def bound(self, token, boundTo):
-        tokenData = DBSession.query(Token).filter(Token.token==token).first()
-        return tokenData.bound_to == boundTo
-
-    def activate(self, token):
-        tokenData = DBSession.query(Token).filter(Token.token==token).first()
-        if tokenData.bound_to == '':
-            raise Exception('can\'t activate unbound token')
-        token = Token()
-        token.token = tokenData.token
-        token.verification_code = tokenData.verification_code
-        token.bound_to = tokenData.bound_to
-        token.activated = True
-        DBSession.merge(token)
-
-    def isActivated(self, token):
-        tokenData = DBSession.query(Token).filter(Token.token==token).first()
-        return tokenData.activated
+from .models import DBSession
 
 class WalletService(object):
     def fileDossier(self, owner_hash, access_hash, content):
@@ -96,3 +29,4 @@ class WalletService(object):
         repo = DossierRepository()
         repo.store(dossier)
         return True
+
