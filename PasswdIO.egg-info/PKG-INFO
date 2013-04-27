@@ -6,19 +6,24 @@ Home-page: UNKNOWN
 Author: UNKNOWN
 Author-email: UNKNOWN
 License: UNKNOWN
-Description: PasswdIO README
-        ==================
+Description: ### Getting Started
+        (on Ubuntu 12.04 LTS)
         
-        Getting Started
-        ---------------
+            sudo apt-get install python-dev python-pip libpq-dev
+            sudo pip install virtualenv
+            cd ~
+            virtualenv passwd.io-env
+            cd passwd.io-env
+            source bin/activate
+            git clone https://github.com/ManuelKiessling/passwd.io.git
+            cd passwd.io
+            pip install -e ./
+            python migrations/manage.development.py version_control
+            python migrations/manage.development.py upgrade
+            python setup.py test
+            pserve development.ini --reload
         
-        - cd <directory containing this file>
-        
-        - $venv/bin/python setup.py develop
-        
-        - $venv/bin/populate_PasswdIO development.ini
-        
-        - $venv/bin/pserve development.ini
+        Visit http://localhost:6543/static/webapp/
         
         
         
