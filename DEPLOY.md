@@ -31,6 +31,7 @@ as root
     sudo virtualenv /opt/passwd.io-env
     sudo ln -s /opt/passwd.io /opt/passwd.io-env/app
     cd /opt/passwd.io-env
+    sed -i 's/ exceptions / exc /g' local/lib/python2.7/site-packages/migrate/versioning/schema.py
     . bin/activate
     cd app
     sudo pip install .
