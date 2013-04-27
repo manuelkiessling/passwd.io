@@ -33,7 +33,7 @@ as root
     cd /opt/passwd.io-env
     . bin/activate
     cd app
-    sudo pip install -e .
+    sudo pip install .
     sudo mkdir /var/run/passwd.io
     sudo mkdir /var/log/passwd.io
     sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
