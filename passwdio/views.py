@@ -6,7 +6,7 @@ from sqlalchemy.exc import DBAPIError
 
 from .application import WalletService
 
-@view_config(route_name='/api/dossier/save', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/save', renderer='json')
 def save(request):
     walletService = WalletService()
     try:
@@ -18,7 +18,7 @@ def save(request):
         request.response.status_int = 500
     return {'success': success}
 
-@view_config(route_name='/api/dossier/load', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/load', renderer='json')
 def load(request):
     walletService = WalletService()
     try:
@@ -39,7 +39,7 @@ def load(request):
         request.response.status_int = 500
         return {'status': 'error'}
 
-@view_config(route_name='/api/dossier/change_access_hash', renderer='json', xhr=False)
+@view_config(route_name='/api/dossier/change_access_hash', renderer='json')
 def changeAccessHash(request):
     walletService = WalletService()
     success = True
