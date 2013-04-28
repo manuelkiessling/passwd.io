@@ -43,8 +43,10 @@
 
 There are two places where you need to change the database password from
 *YOUR_DB_PASSWORD_HERE* to the database password you have chosen:
-* /opt/passwd.io-env/app/production.ini, line 13
-* /opt/passwd.io-env/app/migrations/manage.production.py, line 5
+
+/opt/passwd.io-env/app/production.ini, line 13
+
+/opt/passwd.io-env/app/migrations/manage.production.py, line 5
 
     sudo su - nobody
     bash
