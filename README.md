@@ -27,6 +27,7 @@ For development mode, you will also need sqlite.
     git clone https://github.com/ManuelKiessling/passwd.io.git ./app
     cd app
     pip install -r requirements.txt .
+    sed -i 's/ exceptions / exc /g' ../local/lib/python2.7/site-packages/migrate/versioning/schema.py
     python migrations/manage.development.py version_control
     python migrations/manage.development.py upgrade
     python setup.py test
