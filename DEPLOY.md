@@ -34,7 +34,7 @@ as root
     sed -i 's/ exceptions / exc /g' local/lib/python2.7/site-packages/migrate/versioning/schema.py
     . bin/activate
     cd app
-    sudo pip install .
+    sudo pip install -r requirements.txt .
     sudo mkdir /var/run/passwd.io
     sudo mkdir /var/log/passwd.io
     sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
