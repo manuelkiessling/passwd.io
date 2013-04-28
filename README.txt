@@ -9,7 +9,7 @@
     source bin/activate
     git clone https://github.com/ManuelKiessling/passwd.io.git
     cd passwd.io
-    pip install -e ./
+    pip install -r requirements.txt .
     python migrations/manage.development.py version_control
     python migrations/manage.development.py upgrade
     python setup.py test
