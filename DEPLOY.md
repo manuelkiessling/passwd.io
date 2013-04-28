@@ -9,7 +9,7 @@ as root
 
     sudo su - postgres
     psql template1
-     CREATE USER passwdio WITH PASSWORD 'Jnx725Frs09Hmc628Tfa42jM';
+     CREATE USER passwdio WITH PASSWORD 'YOUR_DB_PASSWORD_HERE';
      CREATE DATABASE passwdio;
      GRANT ALL PRIVILEGES ON DATABASE passwdio TO passwdio;
      \q
