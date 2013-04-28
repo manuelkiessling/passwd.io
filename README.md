@@ -6,7 +6,7 @@ This is the code behind https://passwd.io, the ultra-simple yet secure online pa
 
 **passwd.io** is a web-based client/server application with a Python HTTP backend and a JavaScript frontend.
 
-For the frontend, the appliaction stack is *jQuery Mobile* and the *Stanford Javascript Crypto Library*, on the backend it's Pyramid, Nginx and PostgreSQL.
+For the frontend, the application stack is *jQuery Mobile* and the *Stanford Javascript Crypto Library*, on the backend it's Pyramid, Nginx and PostgreSQL.
 
 ## Requirements
 
