@@ -2,7 +2,6 @@ BeautifulSoup==3.2.1
 Chameleon==2.11
 Mako==0.8.0
 MarkupSafe==0.15
-PasswdIO==0.0
 PasteDeploy==1.5.0
 Pygments==1.6
 SQLAlchemy==0.8.1
