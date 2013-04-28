@@ -1,11 +1,12 @@
-Clone this repository into
-/opt/passwd.io
-as root
+# Deploying passwd.io for production use on Ubuntu GNU/Linux 12.04 LTS systems
+
+    cd /opt
+    sudo git clone https://github.com/ManuelKiessling/passwd.io.git
 
     sudo ln -s /opt/passwd.io/deployment/sysctl.d/passwd.io.conf /etc/sysctl.d/40-passwd.io.conf
-    service procps start
+    sudo service procps restart
 
-    sudo apt-get install libpq-dev postgresql
+    sudo apt-get install nginx-extras python-dev python-pip libpq-dev postgresql
 
     sudo su - postgres
     psql template1
@@ -15,31 +16,36 @@ as root
      \q
      exit
 
-    sudo apt-get install nginx-extras
-    sudo rm /etc/nginx/nginx.conf
+    sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
     sudo ln -s /opt/passwd.io/deployment/nginx/nginx.conf /etc/nginx/nginx.conf
-    sudo rm /etc/nginx/sites-available/default
+    sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
     sudo ln -s /opt/passwd.io/deployment/nginx/sites-available/default /etc/nginx/sites-available/default
     sudo service nginx start
 
-    rm /etc/postgresql/9.1/main/postgresql.conf
-    ln -s /opt/passwd.io/deployment/postgresql/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
+    sudo mv /etc/postgresql/9.1/main/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf.bak
+    sudo ln -s /opt/passwd.io/deployment/postgresql/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
 
-    sudo apt-get install python-dev python-pip
     sudo pip install virtualenv
     sudo mkdir /opt/passwd.io-env
-    sudo virtualenv /opt/passwd.io-env
+    sudo virtualenv --no-site-packages /opt/passwd.io-env
     sudo ln -s /opt/passwd.io /opt/passwd.io-env/app
+
     cd /opt/passwd.io-env
-    sed -i 's/ exceptions / exc /g' local/lib/python2.7/site-packages/migrate/versioning/schema.py
     . bin/activate
+
     cd app
     sudo pip install -r requirements.txt .
+    sudo sed -i 's/ exceptions / exc /g' ../local/lib/python2.7/site-packages/migrate/versioning/schema.py
+
     sudo mkdir /var/run/passwd.io
     sudo mkdir /var/log/passwd.io
     sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
-    sudo chown -R nobody:nogroup /opt/passwd.io
-    sudo chown -R nobody:nogroup /opt/passwd.io-env
+
+There are two places where you need to change the database password from
+*YOUR_DB_PASSWORD_HERE* to the database password you have chosen:
+* /opt/passwd.io-env/app/production.ini, line 13
+* /opt/passwd.io-env/app/migrations/manage.production.py, line 5
+
     sudo su - nobody
     bash
     cd /opt/passwd.io-env
@@ -49,5 +55,7 @@ as root
     python migrations/manage.production.py upgrade
     uwsgi --ini-paste-logged production.ini
 
-reload with
+You can reload the server with
+
     uwsgi --reload /var/run/passwd.io/uwsgi.pid
+

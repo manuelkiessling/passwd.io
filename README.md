@@ -35,3 +35,6 @@ For development mode, you will also need sqlite.
 
 You can now open the web application at http://localhost:6543/static/webapp/
 
+## Setting up a production system
+
+Please see [DEPLOY.md](https://github.com/ManuelKiessling/passwd.io/blob/master/DEPLOY.md)
