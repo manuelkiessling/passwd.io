@@ -25,8 +25,8 @@ server {
   listen 443 ssl;
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   add_header Strict-Transport-Security "max-age=315360000; includeSubdomains";
-  ssl_certificate /opt/passwd.io/deployment/ssl/www.passwd.io.chained.crt;
-  ssl_certificate_key /opt/passwd.io/deployment/ssl/passwd.io.csr.key;
+  ssl_certificate /etc/ssl/certs/chained_passwd.io_startssl.sub.class1.server.ca.crt;
+  ssl_certificate_key /etc/ssl/passwd.io.key;
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
 
