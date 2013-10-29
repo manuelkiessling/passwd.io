@@ -1,4 +1,4 @@
-import uuid, sha
+import uuid
 from .domain import Dossier, DossierRepository
 from .models import DBSession
 
