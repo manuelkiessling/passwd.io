@@ -1,5 +1,7 @@
 # passwd.io
 
+[![Build Status](https://travis-ci.org/manuelkiessling/passwd.io.png?branch=master)](https://travis-ci.org/manuelkiessling/passwd.io)
+
 This is the code behind https://passwd.io, the ultra-simple yet secure online password store.
 
 ## Architecture and stack
