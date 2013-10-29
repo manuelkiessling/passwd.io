@@ -3,3 +3,4 @@
 *.pyc
 PasswdIO.db
 live.ini
+*.egg
