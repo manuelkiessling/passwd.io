@@ -1,4 +1,7 @@
-0.0
+0.2
 ---
+- Ported to Python 3
 
--  Initial version
+0.1
+---
+- Initial version

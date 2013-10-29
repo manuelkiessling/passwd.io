@@ -14,24 +14,22 @@ on the backend it's *Pyramid*, *Nginx* and *PostgreSQL*.
 ## Requirements
 
 In order to setup and run the backend stack, you need a Unix-like system (e.g. Linux or Mac OS X),
-Python 2.7, PostgreSQL & libpq, and pip. All other requirements will be pulled through pip.
+Python 3, PostgreSQL & libpq, and pip. All other requirements will be pulled through pip.
 For development mode, you will also need sqlite.
 
 ## Setting up the development environment
 
 ### On Ubuntu GNU/Linux 12.04 LTS
-    sudo apt-get install python-dev python-pip libpq-dev sqlite3
-    sudo pip install virtualenv
+    sudo apt-get install python3-dev python3-pip libpq-dev sqlite3
+    sudo pip-3.2 install virtualenv
     cd ~
-    virtualenv --no-site-packages passwd.io-env
+    virtualenv-3.2 --no-site-packages passwd.io-env
     cd passwd.io-env
     source bin/activate
-    git clone https://github.com/ManuelKiessling/passwd.io.git ./app
+    git clone https://github.com/manuelkiessling/passwd.io.git ./app
     cd app
-    pip install -r requirements.txt .
-    sed -i 's/ exceptions / exc /g' ../local/lib/python2.7/site-packages/migrate/versioning/schema.py
-    python migrations/manage.development.py version_control
-    python migrations/manage.development.py upgrade
+    python setup.py develop
+    alembic -c development.ini upgrade head
     python setup.py test
     pserve development.ini --reload
 
