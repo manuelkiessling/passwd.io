@@ -12,6 +12,7 @@ requires = [
     'waitress',
     'sqlalchemy',
     'zope.sqlalchemy',
+    'alembic',
     'webtest',
     ]
 
