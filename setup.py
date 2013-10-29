@@ -3,8 +3,8 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.txt')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+README = open(os.path.join(here, 'README.md')).read()
+CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
 
 requires = [
     'pyramid',
@@ -22,7 +22,7 @@ requires = [
     ]
 
 setup(name='PasswdIO',
-      version='0.0',
+      version='0.1',
       description='PasswdIO',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
@@ -31,9 +31,9 @@ setup(name='PasswdIO',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
-      url='',
+      author='Manuel Kiessling',
+      author_email='manuel@kiessling.net',
+      url='https://www.passwd.io',
       keywords='web wsgi bfg pylons pyramid',
       packages=find_packages(),
       include_package_data=True,
