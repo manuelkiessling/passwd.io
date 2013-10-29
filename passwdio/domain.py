@@ -1,6 +1,7 @@
 from .models import DBSession, File
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.sql import exists
+import transaction
 import re, uuid
 
 class Dossier(object):
@@ -37,6 +38,7 @@ class DossierRepository(object):
         file.access_hash = dossier.access_hash
         file.content = dossier.content
         DBSession.merge(file)
+        transaction.commit()
 
     def find(self, owner_hash, access_hash):
         dv = DossierValidation()
