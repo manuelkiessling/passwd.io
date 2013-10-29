@@ -182,11 +182,11 @@ class FunctionalTests(unittest.TestCase):
         post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'foo'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?owner_hash=' + valid_owner_hash + '&access_hash=' + valid_access_hash, status=200) 
-        self.assertTrue(res.body == '{"content": "foo"}')
+        self.assertTrue(res.body == b'{"content": "foo"}')
         post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'bar'}
         self.testapp.post('/api/dossier/save.json', post_params, status=200)
         res = self.testapp.get('/api/dossier/load.json?owner_hash=' + valid_owner_hash + '&access_hash=' + valid_access_hash, status=200) 
-        self.assertTrue(res.body == '{"content": "bar"}')
+        self.assertTrue(res.body == b'{"content": "bar"}')
 
     def test_load_wrongaccesshash(self):
         post_params = {'owner_hash': valid_owner_hash, 'access_hash': valid_access_hash, 'content': 'fdjs9884jhf98'}
