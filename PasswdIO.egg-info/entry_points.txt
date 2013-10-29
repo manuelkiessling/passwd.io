@@ -1,5 +1,0 @@
-      [paste.app_factory]
-      main = passwdio:main
-      [console_scripts]
-      initialize_PasswdIO_db = passwdio.scripts.initializedb:main
-      
