@@ -30,7 +30,7 @@ files, e.g. for Nginx and PostgreSQL.
 
 We start by installing required Ubuntu packages:
 
-    sudo apt-get install screen nginx-extras python3 python3-dev python-virtualenv libpq-dev postgresql
+    sudo apt-get install git screen nginx-extras python3 python3-dev python-virtualenv libpq-dev postgresql
 
 Now we can set up the database. Please choose a good password and write it down
 for future use:
@@ -75,10 +75,6 @@ application:
     cd app
     python setup.py develop
 
-    sudo mkdir /var/run/passwd.io
-    sudo mkdir /var/log/passwd.io
-    sudo chown nobody:nogroup /var/run/passwd.io /var/log/passwd.io
-
 In order to allow the passwd.io application to use the PostgreSQL database we
 created, we need to change the production.ini configuration file (located at
 /opt/passwd.io-env/app/production.ini). The string "YOUR_DB_PASSWORD_HERE" on
@@ -88,14 +84,14 @@ set earlier.
 Now we can switch to the user nobody in order to set up the initial database
 structure and to start the uWSGI application server:
 
+    screen
     sudo su - nobody
     bash
-    screen
     cd /opt/passwd.io-env
     source bin/activate
     cd app
     alembic -c production.ini upgrade head
-    /opt/passwd.io-env/bin/uwsgi --paste config:/opt/passwd.io/production.ini --socket :9000
+    /opt/passwd.io-env/bin/uwsgi --paste config:/opt/passwd.io/production.ini --socket 127.0.0.1:9000
 
 Put the screen session in the background with CTRL-A CTRL-D.
 
