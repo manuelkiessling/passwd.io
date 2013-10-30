@@ -17,8 +17,8 @@ import sqlalchemy as sa
 def upgrade():
     op.create_table('files',
         sa.Column('id', sa.String(36), primary_key=True, nullable=False),
-        sa.Column('owner_hash', sa.String(40), default="", nullable=False, unique=True),
-        sa.Column('access_hash', sa.String(40), default="", nullable=False),
+        sa.Column('owner_hash', sa.String(64), default="", nullable=False, unique=True),
+        sa.Column('access_hash', sa.String(64), default="", nullable=False),
         sa.Column('content', sa.Text, default="", nullable=False),
     )
 
