@@ -93,7 +93,7 @@ structure and to start the uWSGI application server:
     alembic -c production.ini upgrade head
     /opt/passwd.io-env/bin/uwsgi --paste config:/opt/passwd.io/production.ini --socket 127.0.0.1:9000
 
-Put the screen session in the background with CTRL-A CTRL-D.
+Put the screen session in the background with CTRL-a CTRL-d.
 
 You can reload the server with
 
