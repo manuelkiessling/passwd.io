@@ -30,7 +30,7 @@ files, e.g. for Nginx and PostgreSQL.
 
 We start by installing required Ubuntu packages:
 
-    sudo apt-get install nginx-extras python3 python-virtualenv libpq-dev postgresql
+    sudo apt-get install screen nginx-extras python3 python3-dev python-virtualenv libpq-dev postgresql
 
 Now we can set up the database. Please choose a good password and write it down
 for future use:
@@ -43,7 +43,7 @@ for future use:
      \q
      exit
 
-Next, we create a place for the application to live and clone it from Github:
+Next, we create a place for the application to live in and clone it from Github:
 
     cd /opt
     sudo git clone https://github.com/manuelkiessling/passwd.io.git
@@ -66,7 +66,7 @@ the passwd.io specific settings from the cloned repository:
 We can now start to set up the Python 3 virtualenv for the passwd.io
 application:
 
-    sudo virtualenv -p /usr/bin/python3 --no-site-packages /opt/passwd.io-env
+    sudo virtualenv -p /usr/bin/python3 /opt/passwd.io-env
     sudo ln -s /opt/passwd.io /opt/passwd.io-env/app
 
     cd /opt/passwd.io-env
@@ -90,11 +90,14 @@ structure and to start the uWSGI application server:
 
     sudo su - nobody
     bash
+    screen
     cd /opt/passwd.io-env
     source bin/activate
     cd app
     alembic -c production.ini upgrade head
-    uwsgi --ini-paste-logged production.ini
+    /opt/passwd.io-env/bin/uwsgi --paste config:/opt/passwd.io/production.ini --socket :9000
+
+Put the screen session in the background with CTRL-A CTRL-D.
 
 You can reload the server with
 

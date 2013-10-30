@@ -10,6 +10,8 @@ requires = [
     'pyramid',
     'pyramid-debugtoolbar',
     'waitress',
+    'uwsgi',
+    'psycopg2',
     'sqlalchemy',
     'zope.sqlalchemy',
     'alembic',

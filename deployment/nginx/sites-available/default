@@ -58,14 +58,14 @@ server {
 
   location /api {
     limit_req   zone=read  burst=25;
-    uwsgi_pass  unix:///tmp/uwsgi.sock;
+    uwsgi_pass  127.0.0.1:9000;
     include     uwsgi_params;
     uwsgi_param SCRIPT_NAME /;
   }
 
   location /api/dossier/save.json {
     limit_req   zone=write  burst=5;
-    uwsgi_pass  unix:///tmp/uwsgi.sock;
+    uwsgi_pass  127.0.0.1:9000;
     include     uwsgi_params;
     uwsgi_param SCRIPT_NAME /;
   }
