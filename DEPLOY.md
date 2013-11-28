@@ -99,4 +99,4 @@ You can reload the server with
 
     uwsgi --reload /var/run/passwd.io/uwsgi.pid
 
-Your application can now be reached on the web. Please no
+Your application can now be reached on the web.
