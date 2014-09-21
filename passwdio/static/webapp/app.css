@@ -15,6 +15,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
     padding-top: 2px;
     border-radius: 0 0 3px 3px;
     margin-left: 200px;
+    max-width: 65%;
   }
   #info {
     display: none;
@@ -92,6 +93,7 @@ html, body.ui-mobile-viewport.ui-overlay-b {
 
 input.ui-input-text, textarea.ui-input-text, .ui-input-search {
   background-color: #fff;
+  font-family: "Courier New", Courier, monospace;
 }
 
 #captcha-image {
